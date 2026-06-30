@@ -12,6 +12,7 @@
   [Pystache](https://github.com/defunkt/pystache).
 - [PEP 561](https://peps.python.org/pep-0561/) typed package.
 - Supports Python mappings, objects, sequences, and callables as render data.
+- Static partials are preloaded and inlined, eliminating render-time boundary overhead.
 
 
 ## Benchmarks
