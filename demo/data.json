@@ -1,0 +1,378 @@
+{
+  "site": {
+    "title": "F-Stache",
+    "tagline": "The Future of Static Site Generation",
+    "description": "Blazing fast mustache compiling with premium aesthetics and developer-first workflows."
+  },
+  "navigation": [
+    { "name": "Features", "url": "#features" },
+    { "name": "Architecture", "url": "#architecture" },
+    { "name": "Testimonials", "url": "#testimonials" },
+    { "name": "Sitemap", "url": "#sitemap" },
+    { "name": "Comparison", "url": "#comparison" },
+    { "name": "Blog", "url": "#blog" },
+    { "name": "Changelog", "url": "#changelog" },
+    { "name": "FAQs", "url": "#faqs" },
+    { "name": "Pricing", "url": "#pricing" }
+  ],
+  "marketing_banner_html": "<span class=\"bg-primary/20 text-primary-hover border border-primary/30 px-2.5 py-0.5 rounded-full text-xs font-bold mr-2\">LAUNCH EVENT</span> F-Stache v2.0 Playgrounds are now live! Explore the compiler sandbox below. <a href=\"#architecture\" class=\"underline font-medium hover:opacity-80 transition-opacity ml-1\">Try simulator &rarr;</a>",
+  "announcements": [],
+  "hero": {
+    "gradient_text": "Blazing Fast Templating",
+    "subheading": "Compile complex mustache layouts in microseconds, zero overhead, pure performance.",
+    "cta_primary": "Get Started",
+    "cta_secondary": "View Docs"
+  },
+  "stats": [
+    { "value": "1.2ms", "label": "Avg. Render Time" },
+    { "value": "100%", "label": "Spec Compliant" },
+    { "value": "Zero", "label": "JS Dependencies" }
+  ],
+  "features": [
+    {
+      "icon": "⚡",
+      "title": "Microsecond Execution",
+      "description": "Engineered with maximum efficiency. Mustache templates render with minimal memory footprint and zero CPU waste."
+    },
+    {
+      "icon": "🧩",
+      "title": "Modular Partials",
+      "description": "Effortlessly compose complex layouts. Nest headers, footers, card grids, and custom wrappers with ease."
+    },
+    {
+      "icon": "🎨",
+      "title": "Aesthetic-First Design",
+      "description": "Includes fully responsive CSS custom properties, glassmorphism containers, and beautiful gradients out of the box."
+    }
+  ],
+  "testimonials": [
+    {
+      "avatar": "⚡",
+      "quote": "Compiling our product catalog documentation went from 8 seconds to 12 milliseconds. F-Stache is an absolute game-changer for static site generation.",
+      "author": "Sarah Chen",
+      "role": "VP of Engineering at DocuFlow"
+    },
+    {
+      "avatar": "🌐",
+      "quote": "We integrated F-Stache into our edge workers. It renders heavily-nested static dashboards with zero latency spikes and under 2ms TTFB.",
+      "author": "Marcus Vance",
+      "role": "Principal Edge Architect at CDNify"
+    }
+  ],
+  "docs_tree": [
+    {
+      "name": "Documentation Blueprint",
+      "has_children": true,
+      "children": [
+        {
+          "name": "Getting Started",
+          "has_children": true,
+          "children": [
+            { "name": "Introduction", "children": [] },
+            { "name": "Quick Installation", "children": [] },
+            {
+              "name": "Advanced Configuration",
+              "has_children": true,
+              "children": [
+                { "name": "Docker Environments", "children": [] },
+                { "name": "UV CLI Integrations", "children": [] },
+                { "name": "Docker Swarm Configurations", "children": [] },
+                { "name": "Kubernetes Sidecar Injectors", "children": [] }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Spec Compliance Guide",
+          "has_children": true,
+          "children": [
+            { "name": "Core Interpolation", "children": [] },
+            { "name": "Template Inheritance Layouts", "children": [] },
+            { "name": "Delimiter Modifications", "children": [] },
+            { "name": "Escaping Rules & Controls", "children": [] },
+            { "name": "Implicit Iteration Scopes", "children": [] }
+          ]
+        },
+        {
+          "name": "Performance Tuning",
+          "has_children": true,
+          "children": [
+            { "name": "Pre-compilation Caching", "children": [] },
+            { "name": "Minification Workflows", "children": [] },
+            { "name": "Memory Overhead Analysis", "children": [] },
+            { "name": "Static Code Elimination", "children": [] }
+          ]
+        },
+        {
+          "name": "Integrations",
+          "has_children": true,
+          "children": [
+            { "name": "Next.js Static Slots", "children": [] },
+            { "name": "Vite Bundler Plugin", "children": [] },
+            { "name": "Rust Cargo Bindings", "children": [] },
+            { "name": "Webpack Loader Hooks", "children": [] }
+          ]
+        },
+        {
+          "name": "API Specifications Reference",
+          "has_children": true,
+          "children": [
+            { "name": "Compile Endpoint API", "children": [] },
+            { "name": "Context Validation Rules", "children": [] },
+            { "name": "Metadata Payload Format", "children": [] },
+            { "name": "Rate Limiting Headers", "children": [] },
+            { "name": "Error Response Handlers", "children": [] }
+          ]
+        }
+      ]
+    }
+  ],
+  "comparison_matrix": [
+    {
+      "feature": "Static Compilation Speed",
+      "fstache": "1.2ms (Microseconds)",
+      "handlebars": "28ms",
+      "jinja2": "45ms",
+      "liquid": "82ms",
+      "pug": "110ms"
+    },
+    {
+      "feature": "JS Runtime Bloat",
+      "fstache": "Zero Dependencies",
+      "handlebars": "320KiB Bundled JS",
+      "jinja2": "Not Applicable",
+      "liquid": "210KiB Bundled JS",
+      "pug": "450KiB Bundled JS"
+    },
+    {
+      "feature": "Delimiter Customization",
+      "fstache": "Native Delimiter Switching",
+      "handlebars": "Configurable (Requires JS)",
+      "jinja2": "Configurable (Requires Python)",
+      "liquid": "Fixed syntax",
+      "pug": "Not supported"
+    },
+    {
+      "feature": "Logic-less Constraints",
+      "fstache": "Strict (Separates concerns)",
+      "handlebars": "Moderate (Helpers allowed)",
+      "jinja2": "None (Full logic code)",
+      "liquid": "None (Full logic tags)",
+      "pug": "None (Full JS execution)"
+    },
+    {
+      "feature": "Edge Worker Execution",
+      "fstache": "Highly optimized (Pure static)",
+      "handlebars": "Requires heavy polyfills",
+      "jinja2": "Unsupported",
+      "liquid": "Slow bootstrap",
+      "pug": "Unsupported"
+    },
+    {
+      "feature": "Recursive Partial Invocations",
+      "fstache": "Supported natively",
+      "handlebars": "Requires custom helpers",
+      "jinja2": "Supported via macros",
+      "liquid": "Supported",
+      "pug": "Supported via mixins"
+    }
+  ],
+  "blog_posts": [
+    {
+      "badge": "COMPILER",
+      "title": "Unlocking Microsecond Render Times in Static Site Generators",
+      "teaser": "How we re-engineered string concatenation tokenizers to bypass standard engine bottlenecks, achieving rendering under 1.5ms for production dashboards.",
+      "author": "Sarah Chen",
+      "date": "June 15, 2026",
+      "read_time": "5 min read"
+    },
+    {
+      "badge": "AESTHETICS",
+      "title": "Designing Sleek Glassmorphism UIs with Tailwind CSS v4",
+      "teaser": "A comprehensive deep dive into new utility variables, backdrop-filters, and gradient borders in Tailwind v4 that compose modern dashboard environments.",
+      "author": "David Lin",
+      "date": "June 12, 2026",
+      "read_time": "4 min read"
+    },
+    {
+      "badge": "SPECIFICATION",
+      "title": "The Power of Delimiter Switching in Complex Markup",
+      "teaser": "Mustache delimiter switching enables literal syntax blocks for other templates (like Vue, Angular, or Django templates) without escape sequence issues.",
+      "author": "Elena Rostova",
+      "date": "June 08, 2026",
+      "read_time": "3 min read"
+    },
+    {
+      "badge": "PERFORMANCE",
+      "title": "Edge Worker Renders: Bypassing Cold Start Latencies",
+      "teaser": "Edge architectures require light, zero-dependency HTML pipelines. We demonstrate how eliminating bundle dependencies enables 2ms TTFB across regions.",
+      "author": "Marcus Vance",
+      "date": "May 30, 2026",
+      "read_time": "6 min read"
+    },
+    {
+      "badge": "CASE STUDY",
+      "title": "How CDNify Scaled Dashboards to 10M Monthly Readers",
+      "teaser": "A technical case study on how CDNify transitioned their analytics status panel to pre-rendered Mustache layouts, slashing server bills by 85%.",
+      "author": "Jessica Miller",
+      "date": "May 25, 2026",
+      "read_time": "8 min read"
+    },
+    {
+      "badge": "API REFERENCE",
+      "title": "Standardizing JSON Schema Layout Contracts",
+      "teaser": "Enforcing schema boundaries between data services and template presentation layers ensures safety, code cleanliness, and rapid UI iteration.",
+      "author": "Alex Mercer",
+      "date": "May 18, 2026",
+      "read_time": "4 min read"
+    },
+    {
+      "badge": "SECURITY",
+      "title": "Mitigating Template Injection Vulnerabilities in Static Sites",
+      "teaser": "Template injection occurs when untrusted user inputs are dynamically compiled. We analyze safety controls, sandboxed build nodes, and HTML escaping protocols in Mustache.",
+      "author": "Liam Vance",
+      "date": "May 10, 2026",
+      "read_time": "5 min read"
+    },
+    {
+      "badge": "EDGE COMPUTING",
+      "title": "Deploying Dynamic Static Pre-Renders to Cloudflare Workers",
+      "teaser": "By combining CDN edge logic with pre-compiled layout nodes, developers can achieve static generation speed with dynamic personalization parameters on the fly.",
+      "author": "Sophia Loren",
+      "date": "May 02, 2026",
+      "read_time": "7 min read"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "v2.0.0-beta",
+      "date": "June 2026",
+      "additions": [
+        "Added standard support for recursive partial templates.",
+        "Integrated Tailwind CSS v4 support in layouts.",
+        "Added Alpine.js interactivity slots."
+      ],
+      "fixes": [
+        "Fixed context stack bubbling lookup on empty child collections.",
+        "Resolved whitespace stripping tags issue in nested delimiter shifts."
+      ]
+    },
+    {
+      "version": "v1.4.2",
+      "date": "April 2026",
+      "additions": [
+        "Added implicit iterator syntax parsing.",
+        "Introduced layout slot parent template composition."
+      ],
+      "fixes": [
+        "Resolved SVG rendering crash on Safari 16.4 browsers."
+      ]
+    },
+    {
+      "version": "v1.3.0",
+      "date": "January 2026",
+      "additions": [
+        "Integrated CLI compilation pipeline.",
+        "Added triple-mustache unescaped variable injections."
+      ],
+      "fixes": [
+        "Fixed HTML character escaping logic on ampersand tags."
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq-1",
+      "question": "Why is Mustache called 'logic-less' templating?",
+      "answer": "Because it doesn't contain explicit conditional logic statements (like 'if/else' or loops). The rendering behavior is driven entirely by the structure of the data you pass in. This keeps templates highly readable, maintainable, and extremely performant."
+    },
+    {
+      "id": "faq-2",
+      "question": "What is the benefit of using unescaped HTML tags?",
+      "answer": "By default, variables are HTML-escaped to prevent XSS attacks. Using triple braces allows you to inject raw, styled HTML snippets directly into the layout from trusted CMS sources."
+    },
+    {
+      "id": "faq-3",
+      "question": "Can I nest partial templates dynamically?",
+      "answer": "Yes, Mustache supports nesting partial templates. Partials are loaded at compile time, which enables complex layout composition while maintaining maximum performance."
+    },
+    {
+      "id": "faq-4",
+      "question": "What is context stack bubbling and how is it resolved?",
+      "answer": "Mustache searches parent scopes if a variable is not found in the current object context. To prevent infinite loops during recursion, always specify empty termination properties (like 'children: []') on child records."
+    },
+    {
+      "id": "faq-5",
+      "question": "How does dynamic delimiter switching work?",
+      "answer": "Using the syntax '{{=<% %>=}}', you can temporarily redefine Mustache tags to '<%' and '%>'. This is highly useful when compiling content that naturally uses double curlies, like AngularJS or Vue markup."
+    },
+    {
+      "id": "faq-6",
+      "question": "Is there a production-ready CLI compiler for pipelines?",
+      "answer": "Yes. F-Stache compiles using Python's UV runner for sandbox Chevron builds, or can be packaged inside Docker containers to run standard Mustache compilers in CI/CD pipelines."
+    },
+    {
+      "id": "faq-7",
+      "question": "Can I style compiled HTML templates with Tailwind CSS?",
+      "answer": "Absolutely. By referencing a browser compilation script or incorporating the Tailwind compiler, you can style all templates using standard utility classes and responsive grids."
+    },
+    {
+      "id": "faq-8",
+      "question": "How does the implicit iterator work?",
+      "answer": "When looping over plain arrays of strings or numbers, the implicit iterator '{{.}}' acts as a placeholder representing the current array element, keeping your JSON files flat and lightweight."
+    },
+    {
+      "id": "faq-9",
+      "question": "Can I use Mustache templates for email generation?",
+      "answer": "Absolutely. Because Mustache outputs static HTML and does not require JavaScript engines or runtime dependencies, it is the industry standard for compiling transactional HTML email templates with embedded inline CSS."
+    },
+    {
+      "id": "faq-10",
+      "question": "What is the difference between Mustache and Handlebars?",
+      "answer": "Handlebars is a superset of Mustache. While Mustache enforces a strict logic-less standard without helpers or custom blocks, Handlebars extends the syntax to support custom registerHelper blocks, execution logic, and dynamic paths."
+    },
+    {
+      "id": "faq-11",
+      "question": "Does F-Stache support server-side rendering (SSR)?",
+      "answer": "Yes. Due to the high execution speed (under 1.5ms per render), F-Stache can be deployed inside Node.js, Go, or Python web servers to process server-side rendering for millions of requests with minimal memory overhead."
+    },
+    {
+      "id": "faq-12",
+      "question": "How do I secure Mustache template injection paths?",
+      "answer": "Template injection occurs when untrusted user input is directly evaluated as template source code. Always separate static layout structure from runtime data variables by pre-defining all compiled layouts and validating variables against JSON schemas before render execution."
+    }
+  ],
+  "show_pricing": true,
+  "pricing_plans": [
+    {
+      "name": "Developer",
+      "price_monthly": "$0",
+      "price_annual": "$0",
+      "price_annual_billed": "free forever",
+      "popular": false,
+      "features": [
+        "Standard compiler",
+        "Local development mode",
+        "Community Discord access"
+      ]
+    },
+    {
+      "name": "Professional",
+      "price_monthly": "$12",
+      "price_annual": "$9.60",
+      "price_annual_billed": "billed annually ($115/yr)",
+      "popular": true,
+      "features": [
+        "Unlimited CLI compiles",
+        "Advanced partial resolution",
+        "Priority email support",
+        "Enterprise scale configs"
+      ]
+    }
+  ],
+  "author": {
+    "name": "F-Stache Team",
+    "url": "https://github.com/fstache"
+  },
+  "year": "2026"
+}

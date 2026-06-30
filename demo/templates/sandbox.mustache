@@ -1,0 +1,53 @@
+<!-- Architecture Showcase -->
+<section id="architecture" class="py-16">
+  <div class="bg-gradient-to-b from-slate-900/40 to-bg-primary/80 border border-card-border rounded-3xl p-12 backdrop-blur-sm">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">How It Works</div>
+        <h2 class="font-display text-3xl font-bold tracking-tight mb-6">Pure Logic-less compilation</h2>
+        <p class="text-text-secondary mb-6 text-[0.95rem] leading-relaxed">
+          F-Stache uses clean, logic-less Mustache syntax combined with external JSON schemas to compile robust HTML structures.
+        </p>
+        <p class="text-text-muted text-[0.9rem] leading-relaxed">
+          Separate structure from details. Try modifying context variables on the right to simulate live templating.
+        </p>
+      </div>
+
+      <!-- Live Sandbox Playground using AlpineJS -->
+      <div x-data="{ name: 'Developer', speed: '1.2ms' }" class="bg-black/40 border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col gap-5">
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <span class="text-xs font-bold text-primary tracking-wider uppercase">Interactive Sandbox</span>
+          <span class="text-emerald-400 text-xs font-mono bg-emerald-500/10 px-2 py-0.5 rounded-full">F-Stache Simulator</span>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <label class="text-xs font-bold text-text-secondary uppercase">1. Edit Context Data (JSON)</label>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <span class="text-[0.7rem] font-semibold text-text-muted block mb-1">Name</span>
+              <input x-model="name" class="w-full bg-white/5 border border-card-border rounded-lg px-3 py-1.5 text-sm font-mono text-emerald-300 focus:outline-none focus:border-primary transition-all duration-300" />
+            </div>
+            <div>
+              <span class="text-[0.7rem] font-semibold text-text-muted block mb-1">Render Speed</span>
+              <input x-model="speed" class="w-full bg-white/5 border border-card-border rounded-lg px-3 py-1.5 text-sm font-mono text-cyan-300 focus:outline-none focus:border-secondary transition-all duration-300" />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <span class="text-xs font-bold text-text-secondary uppercase">2. Mustache Template</span>
+          <div class="bg-slate-950/60 rounded-lg p-3 font-mono text-[0.8rem] text-slate-300 border border-white/5">
+            &lt;p&gt;Hello, <span class="text-primary font-bold">{{=<% %>=}}{{name}}<%={{ }}=%></span>! Compiled in <span class="text-secondary font-bold">{{=<% %>=}}{{speed}}<%={{ }}=%></span>.&lt;/p&gt;
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <span class="text-xs font-bold text-text-secondary uppercase">3. Rendered Output HTML</span>
+          <div class="bg-slate-950/90 rounded-lg p-3.5 font-mono text-[0.85rem] text-white border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]">
+            &lt;p&gt;Hello, <span x-text="name" class="text-emerald-400 font-bold"></span>! Compiled in <span x-text="speed" class="text-cyan-400 font-bold"></span>.&lt;/p&gt;
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

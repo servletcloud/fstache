@@ -1,0 +1,52 @@
+<!-- Pricing Section -->
+{{#show_pricing}}
+  <section id="pricing" x-data="{ billingPeriod: 'monthly' }" class="py-24 border-t border-card-border">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Flexible Plans</div>
+      <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Transparent Pricing</h2>
+      <p class="text-text-secondary">Choose the perfect compile power for your workflow.</p>
+    </div>
+
+    <!-- Billing Toggle Switch -->
+    <div class="flex justify-center items-center gap-4 mb-16">
+      <span :class="billingPeriod === 'monthly' ? 'text-text-primary' : 'text-text-muted'" class="text-sm font-semibold transition-colors duration-300">Monthly</span>
+      <button @click="billingPeriod = billingPeriod === 'monthly' ? 'annual' : 'monthly'" class="w-12 h-6 bg-slate-800 rounded-full p-0.5 relative transition-colors duration-300 focus:outline-none cursor-pointer" aria-label="Toggle Billing Period">
+        <div :class="billingPeriod === 'annual' ? 'translate-x-6 bg-secondary' : 'translate-x-0 bg-primary'" class="w-5 h-5 rounded-full transition-transform duration-300 transform"></div>
+      </button>
+      <span :class="billingPeriod === 'annual' ? 'text-text-primary' : 'text-text-muted'" class="text-sm font-semibold transition-colors duration-300 flex items-center gap-1.5">
+        Annual
+        <span class="bg-emerald-500/10 text-emerald-400 text-[0.7rem] px-2 py-0.5 rounded-full font-bold">Save 20%</span>
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center max-w-4xl mx-auto">
+      {{#pricing_plans}}
+        <div class="bg-card-bg border border-card-border rounded-3xl p-12 backdrop-blur-md transition-all duration-300 flex flex-col w-full max-w-[380px] relative {{#popular}}border-primary shadow-[0_8px_30px_rgba(99,102,241,0.15)] before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-primary before:to-secondary before:rounded-t-3xl{{/popular}}">
+          {{#popular}}
+            <div class="absolute -top-3 right-6 bg-gradient-to-r from-primary to-primary-hover text-white text-[0.75rem] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-[0_4px_10px_rgba(99,102,241,0.3)]">Popular</div>
+          {{/popular}}
+          <h4 class="font-display text-2xl font-bold mb-4">{{name}}</h4>
+
+          <!-- Dynamic Price and Period with Alpine.js -->
+          <div class="font-display text-5xl font-extrabold leading-none mb-2 flex items-baseline">
+            <span x-show="billingPeriod === 'monthly'">{{price_monthly}}</span>
+            <span x-show="billingPeriod === 'annual'" x-cloak>{{price_annual}}</span>
+            <span class="text-base text-text-muted font-medium ml-1">/mo</span>
+          </div>
+
+          <div class="text-xs text-text-muted mb-6">
+            <span x-show="billingPeriod === 'monthly'">billed monthly</span>
+            <span x-show="billingPeriod === 'annual'" x-cloak>{{price_annual_billed}}</span>
+          </div>
+
+          <ul class="list-none mb-10 flex flex-col gap-3 flex-grow">
+            {{#features}}
+              <li class="text-[0.95rem] text-text-secondary flex items-center gap-3 before:content-['✓'] before:text-secondary before:font-bold">{{.}}</li>
+            {{/features}}
+          </ul>
+          <button class="w-full border-none outline-none py-3.5 rounded-xl font-semibold text-base cursor-pointer transition-all duration-300 {{#popular}}bg-gradient-to-r from-primary to-primary-hover text-white shadow-[0_4px_14px_rgba(99,102,241,0.3)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(99,102,241,0.5)]{{/popular}}{{^popular}}bg-white/5 text-text-primary border border-card-border hover:bg-white/10 hover:border-white/20 hover:-translate-y-0.5{{/popular}}">Get Started</button>
+        </div>
+      {{/pricing_plans}}
+    </div>
+  </section>
+{{/show_pricing}}

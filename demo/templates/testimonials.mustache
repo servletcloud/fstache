@@ -1,0 +1,24 @@
+{{! LIST ITERATION: Renders user testimonials dynamically }}
+<!-- Testimonials Section -->
+<section id="testimonials" class="py-24 border-t border-card-border">
+  <div class="text-center max-w-2xl mx-auto mb-16">
+    <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Customer Stories</div>
+    <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Trusted by Scale Developers</h2>
+    <p class="text-text-secondary">Read how companies are speeding up their render times with F-Stache.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    {{#testimonials}}
+      <div class="bg-card-bg border border-card-border rounded-2xl p-8 backdrop-blur-md hover:border-card-hover-border transition-all duration-300 flex flex-col justify-between">
+        <p class="text-text-primary text-lg italic mb-6">"{{quote}}"</p>
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-2xl border border-card-border">{{avatar}}</div>
+          <div>
+            <h4 class="font-bold text-text-primary text-sm">{{author}}</h4>
+            <p class="text-text-muted text-xs font-semibold">{{role}}</p>
+          </div>
+        </div>
+      </div>
+    {{/testimonials}}
+  </div>
+</section>

@@ -1,0 +1,25 @@
+{{! LIST ITERATION & ALPINE: Interactive FAQ accordion layout }}
+<!-- FAQ Section -->
+<section id="faqs" class="py-24 border-t border-card-border" x-data="{ activeFaq: null }">
+  <div class="text-center max-w-2xl mx-auto mb-16">
+    <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Frequently Asked Questions</div>
+    <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Got Questions? We Have Answers</h2>
+    <p class="text-text-secondary">Learn more about Mustache compiling and layout strategies.</p>
+  </div>
+
+  <div class="max-w-3xl mx-auto flex flex-col gap-4">
+    {{#faqs}}
+      <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === '{{id}}' ? 'border-primary/50 bg-slate-900/60' : ''">
+        <button @click="activeFaq = activeFaq === '{{id}}' ? null : '{{id}}'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+          <span>{{question}}</span>
+          <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === '{{id}}' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div x-show="activeFaq === '{{id}}'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+          {{answer}}
+        </div>
+      </div>
+    {{/faqs}}
+  </div>
+</section>

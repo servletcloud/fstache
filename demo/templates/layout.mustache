@@ -1,0 +1,15 @@
+{{> header}}
+
+{{! UNESCAPED VARIABLE: Marketing notice banner }}
+<div class="mt-32 w-full max-w-6xl mx-auto px-6">
+  <div class="bg-gradient-to-r from-primary/10 to-secondary/10 border border-card-border rounded-2xl p-4 text-center text-sm backdrop-blur-md">
+    {{{marketing_banner_html}}}
+  </div>
+</div>
+
+<main class="max-w-6xl mx-auto px-6">
+  {{! PARTIAL: Including the main content partial }}
+  {{> main_content}}
+</main>
+
+{{> footer}}

@@ -1,0 +1,28 @@
+{{! LIST ITERATION: Renders blog article items dynamically }}
+<!-- Blog Section -->
+<section id="blog" class="py-24 border-t border-card-border">
+  <div class="text-center max-w-2xl mx-auto mb-16">
+    <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Resources & Articles</div>
+    <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Latest Insights from Our Team</h2>
+    <p class="text-text-secondary">Explore technical guides, case studies, and tutorials on Mustache compile engines.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {{#blog_posts}}
+      <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-[0.7rem] font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-md">{{badge}}</span>
+            <span class="text-xs text-text-muted font-medium">{{read_time}}</span>
+          </div>
+          <h3 class="font-display text-lg font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-300">{{title}}</h3>
+          <p class="text-text-secondary text-sm leading-relaxed mb-6">{{teaser}}</p>
+        </div>
+        <div class="flex justify-between items-center border-t border-card-border/40 pt-4 mt-auto">
+          <span class="text-xs text-text-muted">By <span class="font-semibold text-text-primary">{{author}}</span></span>
+          <span class="text-xs text-text-muted">{{date}}</span>
+        </div>
+      </div>
+    {{/blog_posts}}
+  </div>
+</section>

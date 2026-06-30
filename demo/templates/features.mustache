@@ -1,0 +1,19 @@
+{{! LIST ITERATION: Renders features section items dynamically }}
+<!-- Features Section -->
+<section id="features" class="py-24 border-t border-card-border">
+  <div class="text-center max-w-2xl mx-auto mb-16">
+    <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Performance Stack</div>
+    <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Built for Modern Templating</h2>
+    <p class="text-text-secondary">Everything you need to compile logic-less mustache templates into optimized HTML instantly.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+    {{#features}}
+      <div class="bg-card-bg border border-card-border rounded-[20px] p-10 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
+        <div class="text-3xl w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 border border-primary/20">{{icon}}</div>
+        <h3 class="font-display text-xl font-semibold mb-3">{{title}}</h3>
+        <p class="text-text-secondary text-[0.95rem] leading-relaxed">{{description}}</p>
+      </div>
+    {{/features}}
+  </div>
+</section>

@@ -1,0 +1,25 @@
+  <footer id="site-footer" class="border-t border-card-border bg-bg-primary/90 py-16 mt-24 relative overflow-hidden">
+    <!-- Glow Effect -->
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[300px] h-[100px] bg-[radial-gradient(circle,rgba(99,102,241,0.08)_0%,rgba(11,15,25,0)_70%)] pointer-events-none z-10"></div>
+
+    <div class="max-w-6xl mx-auto px-6 flex flex-col items-center gap-8 relative z-20">
+      <div class="flex gap-10">
+        <a href="#features" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Features</a>
+        <a href="#architecture" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Architecture</a>
+        <a href="#testimonials" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Testimonials</a>
+        <a href="#faqs" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">FAQs</a>
+        <a href="#pricing" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Pricing</a>
+      </div>
+
+      {{! OBJECT CONTEXT: Refactoring author info using context block scoping }}
+      <div class="text-text-muted text-sm text-center">
+        {{#author}}
+          <p>&copy; {{year}} <a href="{{url}}" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors duration-300 no-underline">{{name}}</a>. All rights reserved.</p>
+        {{/author}}
+        <p class="mt-2 text-xs opacity-70">Rendered with Chevron Mustache compiler and styled with Tailwind CSS v4.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

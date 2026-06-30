@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{site.title}} - {{site.tagline}}</title>
+  <meta name="description" content="{{site.description}}">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS v4 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Alpine.js CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg-primary: #0b0f19;
+      --color-card-bg: rgba(17, 24, 39, 0.7);
+      --color-card-border: rgba(255, 255, 255, 0.08);
+      --color-card-hover-border: rgba(99, 102, 241, 0.4);
+
+      --color-text-primary: #f3f4f6;
+      --color-text-secondary: #9ca3af;
+      --color-text-muted: #6b7280;
+
+      --color-primary: #6366f1;
+      --color-primary-hover: #4f46e5;
+      --color-primary-glow: rgba(99, 102, 241, 0.15);
+
+      --color-secondary: #06b6d4;
+      --color-secondary-glow: rgba(6, 182, 212, 0.15);
+
+      --color-accent: #ec4899;
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    [x-cloak] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="bg-bg-primary text-text-primary font-sans antialiased overflow-x-hidden relative min-h-screen">
+
+  <!-- Ambient Background Glows -->
+  <div class="absolute w-[600px] h-[600px] -top-[150px] -left-[150px] bg-[radial-gradient(circle,rgba(99,102,241,0.15)_0%,rgba(11,15,25,0)_70%)] pointer-events-none -z-10"></div>
+  <div class="absolute w-[650px] h-[650px] top-[400px] -right-[200px] bg-[radial-gradient(circle,rgba(6,182,212,0.15)_0%,rgba(11,15,25,0)_70%)] pointer-events-none -z-10"></div>
+
+  {{! INVERTED SECTION & SECTIONS: Dynamic announcements bar }}
+  {{#announcements}}
+    <div class="bg-primary/20 text-text-primary border-b border-primary/30 py-2 text-center text-xs font-semibold">
+      {{message}}
+    </div>
+  {{/announcements}}
+  {{^announcements}}
+    <div class="bg-slate-900/80 backdrop-blur-sm border-b border-card-border py-2 text-center text-xs text-text-muted flex justify-center items-center gap-2">
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+      All core compilation pipelines operational (Spec compliant v1.1.2)
+    </div>
+  {{/announcements}}
+
+  {{! NAVIGATION: Sticky, responsive navigation header }}
+  <header id="site-header" x-data="{ mobileMenuOpen: false }" class="backdrop-blur-md bg-bg-primary/70 border-b border-card-border fixed top-8 left-0 w-full z-50 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center relative">
+      <a href="#" class="flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-text-primary no-underline">
+        <span class="bg-gradient-to-br from-primary to-secondary text-white w-8 h-8 rounded-lg flex items-center justify-center font-extrabold text-lg shadow-[0_4px_12px_rgba(99,102,241,0.3)]">{</span>
+        <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">{{site.title}}</span>
+      </a>
+
+      <nav class="flex items-center gap-8">
+        <div class="hidden md:flex gap-8">
+          {{#navigation}}
+            <a href="{{url}}" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">{{name}}</a>
+          {{/navigation}}
+        </div>
+        <a href="#pricing" class="hidden sm:inline-flex bg-gradient-to-br from-primary to-primary-hover text-white px-5 py-2 rounded-lg font-semibold text-sm shadow-[0_4px_14px_rgba(99,102,241,0.4)] hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(99,102,241,0.6)] transition-all duration-300 no-underline">Get Started</a>
+
+        <!-- Mobile Hamburger Menu Button -->
+        <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-text-primary hover:text-primary transition-colors focus:outline-none cursor-pointer" aria-label="Toggle Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            <path x-show="mobileMenuOpen" x-cloak stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </nav>
+
+      <!-- Mobile Menu Drawer -->
+      <div x-show="mobileMenuOpen"
+           x-transition:enter="transition ease-out duration-200"
+           x-transition:enter-start="opacity-0 -translate-y-4"
+           x-transition:enter-end="opacity-100 translate-y-0"
+           x-transition:leave="transition ease-in duration-150"
+           x-transition:leave-start="opacity-100 translate-y-0"
+           x-transition:leave-end="opacity-0 -translate-y-4"
+           x-cloak
+           @click.away="mobileMenuOpen = false"
+           class="md:hidden absolute top-full left-0 w-full bg-bg-primary/95 border-b border-card-border backdrop-blur-lg py-6 px-6 flex flex-col gap-4 shadow-xl z-40">
+        {{#navigation}}
+          <a href="{{url}}" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">{{name}}</a>
+        {{/navigation}}
+        <a href="#pricing" @click="mobileMenuOpen = false" class="bg-gradient-to-br from-primary to-primary-hover text-white px-5 py-3 rounded-lg font-semibold text-center text-sm shadow-[0_4px_14px_rgba(99,102,241,0.4)] transition-all duration-300 no-underline mt-2">Get Started</a>
+      </div>
+    </div>
+  </header>
