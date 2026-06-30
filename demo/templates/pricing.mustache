@@ -3,19 +3,19 @@
   <section id="pricing" x-data="{ billingPeriod: 'monthly' }" class="py-24 border-t border-card-border">
     <div class="text-center max-w-2xl mx-auto mb-12">
       <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Flexible Plans</div>
-      <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Transparent Pricing</h2>
+      <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Tiny Plans</h2>
       <p class="text-text-secondary">Choose the perfect compile power for your workflow.</p>
     </div>
 
     <!-- Billing Toggle Switch -->
     <div class="flex justify-center items-center gap-4 mb-16">
-      <span :class="billingPeriod === 'monthly' ? 'text-text-primary' : 'text-text-muted'" class="text-sm font-semibold transition-colors duration-300">Monthly</span>
-      <button @click="billingPeriod = billingPeriod === 'monthly' ? 'annual' : 'monthly'" class="w-12 h-6 bg-slate-800 rounded-full p-0.5 relative transition-colors duration-300 focus:outline-none cursor-pointer" aria-label="Toggle Billing Period">
+      <span :class="billingPeriod === 'monthly' ? 'text-text-primary' : 'text-text-muted'" class="text-sm font-semibold transition-colors duration-300">Today</span>
+      <button @click="billingPeriod = billingPeriod === 'monthly' ? 'annual' : 'monthly'" class="w-12 h-6 bg-slate-800 rounded-full p-0.5 relative transition-colors duration-300 focus:outline-none cursor-pointer" aria-label="Toggle plan view">
         <div :class="billingPeriod === 'annual' ? 'translate-x-6 bg-secondary' : 'translate-x-0 bg-primary'" class="w-5 h-5 rounded-full transition-transform duration-300 transform"></div>
       </button>
       <span :class="billingPeriod === 'annual' ? 'text-text-primary' : 'text-text-muted'" class="text-sm font-semibold transition-colors duration-300 flex items-center gap-1.5">
-        Annual
-        <span class="bg-emerald-500/10 text-emerald-400 text-[0.7rem] px-2 py-0.5 rounded-full font-bold">Save 20%</span>
+        Forever
+        <span class="bg-emerald-500/10 text-emerald-400 text-[0.7rem] px-2 py-0.5 rounded-full font-bold">free</span>
       </span>
     </div>
 
@@ -31,11 +31,11 @@
           <div class="font-display text-5xl font-extrabold leading-none mb-2 flex items-baseline">
             <span x-show="billingPeriod === 'monthly'">{{price_monthly}}</span>
             <span x-show="billingPeriod === 'annual'" x-cloak>{{price_annual}}</span>
-            <span class="text-base text-text-muted font-medium ml-1">/mo</span>
+            <span class="text-base text-text-muted font-medium ml-1">forever</span>
           </div>
 
           <div class="text-xs text-text-muted mb-6">
-            <span x-show="billingPeriod === 'monthly'">billed monthly</span>
+            <span x-show="billingPeriod === 'monthly'">no wallet needed</span>
             <span x-show="billingPeriod === 'annual'" x-cloak>{{price_annual_billed}}</span>
           </div>
 

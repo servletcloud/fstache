@@ -13,7 +13,7 @@
     { "name": "Blog", "url": "#blog" },
     { "name": "Changelog", "url": "#changelog" },
     { "name": "FAQs", "url": "#faqs" },
-    { "name": "Pricing", "url": "#pricing" }
+    { "name": "Plans", "url": "#pricing" }
   ],
   "marketing_banner_html": "<span class=\"bg-primary/20 text-primary-hover border border-primary/30 px-2.5 py-0.5 rounded-full text-xs font-bold mr-2\">LAUNCH EVENT</span> fstache v2.0 Playgrounds are now live! Explore the compiler sandbox below. <a href=\"#architecture\" class=\"underline font-medium hover:opacity-80 transition-opacity ml-1\">Try simulator &rarr;</a>",
   "announcements": [],
@@ -346,8 +346,8 @@
   "pricing_plans": [
     {
       "name": "Developer",
-      "price_monthly": "$0",
-      "price_annual": "$0",
+      "price_monthly": "3 cookies",
+      "price_annual": "3 cookies",
       "price_annual_billed": "free forever",
       "popular": false,
       "features": [
@@ -358,9 +358,9 @@
     },
     {
       "name": "Professional",
-      "price_monthly": "$12",
-      "price_annual": "$9.60",
-      "price_annual_billed": "billed annually ($115/yr)",
+      "price_monthly": "7 cookies",
+      "price_annual": "7 cookies",
+      "price_annual_billed": "still free",
       "popular": true,
       "features": [
         "Unlimited CLI compiles",

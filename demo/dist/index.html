@@ -74,7 +74,7 @@
             <a href="#blog" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Blog</a>
             <a href="#changelog" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Changelog</a>
             <a href="#faqs" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">FAQs</a>
-            <a href="#pricing" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Pricing</a>
+            <a href="#pricing" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Plans</a>
         </div>
         <a href="#pricing" class="hidden sm:inline-flex bg-gradient-to-br from-primary to-primary-hover text-white px-5 py-2 rounded-lg font-semibold text-sm shadow-[0_4px_14px_rgba(99,102,241,0.4)] hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(99,102,241,0.6)] transition-all duration-300 no-underline">Get Started</a>
 
@@ -106,7 +106,7 @@
           <a href="#blog" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Blog</a>
           <a href="#changelog" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Changelog</a>
           <a href="#faqs" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">FAQs</a>
-          <a href="#pricing" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Pricing</a>
+          <a href="#pricing" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Plans</a>
         <a href="#pricing" @click="mobileMenuOpen = false" class="bg-gradient-to-br from-primary to-primary-hover text-white px-5 py-3 rounded-lg font-semibold text-center text-sm shadow-[0_4px_14px_rgba(99,102,241,0.4)] transition-all duration-300 no-underline mt-2">Get Started</a>
       </div>
     </div>
@@ -1128,19 +1128,19 @@
       <section id="pricing" x-data="{ billingPeriod: 'monthly' }" class="py-24 border-t border-card-border">
         <div class="text-center max-w-2xl mx-auto mb-12">
           <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Flexible Plans</div>
-          <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Transparent Pricing</h2>
+          <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Tiny Plans</h2>
           <p class="text-text-secondary">Choose the perfect compile power for your workflow.</p>
         </div>
     
         <!-- Billing Toggle Switch -->
         <div class="flex justify-center items-center gap-4 mb-16">
-          <span :class="billingPeriod === 'monthly' ? 'text-text-primary' : 'text-text-muted'" class="text-sm font-semibold transition-colors duration-300">Monthly</span>
-          <button @click="billingPeriod = billingPeriod === 'monthly' ? 'annual' : 'monthly'" class="w-12 h-6 bg-slate-800 rounded-full p-0.5 relative transition-colors duration-300 focus:outline-none cursor-pointer" aria-label="Toggle Billing Period">
+          <span :class="billingPeriod === 'monthly' ? 'text-text-primary' : 'text-text-muted'" class="text-sm font-semibold transition-colors duration-300">Today</span>
+          <button @click="billingPeriod = billingPeriod === 'monthly' ? 'annual' : 'monthly'" class="w-12 h-6 bg-slate-800 rounded-full p-0.5 relative transition-colors duration-300 focus:outline-none cursor-pointer" aria-label="Toggle plan view">
             <div :class="billingPeriod === 'annual' ? 'translate-x-6 bg-secondary' : 'translate-x-0 bg-primary'" class="w-5 h-5 rounded-full transition-transform duration-300 transform"></div>
           </button>
           <span :class="billingPeriod === 'annual' ? 'text-text-primary' : 'text-text-muted'" class="text-sm font-semibold transition-colors duration-300 flex items-center gap-1.5">
-            Annual
-            <span class="bg-emerald-500/10 text-emerald-400 text-[0.7rem] px-2 py-0.5 rounded-full font-bold">Save 20%</span>
+            Forever
+            <span class="bg-emerald-500/10 text-emerald-400 text-[0.7rem] px-2 py-0.5 rounded-full font-bold">free</span>
           </span>
         </div>
     
@@ -1150,13 +1150,13 @@
     
               <!-- Dynamic Price and Period with Alpine.js -->
               <div class="font-display text-5xl font-extrabold leading-none mb-2 flex items-baseline">
-                <span x-show="billingPeriod === 'monthly'">$0</span>
-                <span x-show="billingPeriod === 'annual'" x-cloak>$0</span>
-                <span class="text-base text-text-muted font-medium ml-1">/mo</span>
+                <span x-show="billingPeriod === 'monthly'">3 cookies</span>
+                <span x-show="billingPeriod === 'annual'" x-cloak>3 cookies</span>
+                <span class="text-base text-text-muted font-medium ml-1">forever</span>
               </div>
     
               <div class="text-xs text-text-muted mb-6">
-                <span x-show="billingPeriod === 'monthly'">billed monthly</span>
+                <span x-show="billingPeriod === 'monthly'">no wallet needed</span>
                 <span x-show="billingPeriod === 'annual'" x-cloak>free forever</span>
               </div>
     
@@ -1173,14 +1173,14 @@
     
               <!-- Dynamic Price and Period with Alpine.js -->
               <div class="font-display text-5xl font-extrabold leading-none mb-2 flex items-baseline">
-                <span x-show="billingPeriod === 'monthly'">$12</span>
-                <span x-show="billingPeriod === 'annual'" x-cloak>$9.60</span>
-                <span class="text-base text-text-muted font-medium ml-1">/mo</span>
+                <span x-show="billingPeriod === 'monthly'">7 cookies</span>
+                <span x-show="billingPeriod === 'annual'" x-cloak>7 cookies</span>
+                <span class="text-base text-text-muted font-medium ml-1">forever</span>
               </div>
     
               <div class="text-xs text-text-muted mb-6">
-                <span x-show="billingPeriod === 'monthly'">billed monthly</span>
-                <span x-show="billingPeriod === 'annual'" x-cloak>billed annually ($115/yr)</span>
+                <span x-show="billingPeriod === 'monthly'">no wallet needed</span>
+                <span x-show="billingPeriod === 'annual'" x-cloak>still free</span>
               </div>
     
               <ul class="list-none mb-10 flex flex-col gap-3 flex-grow">
@@ -1205,7 +1205,7 @@
         <a href="#architecture" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Architecture</a>
         <a href="#testimonials" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Testimonials</a>
         <a href="#faqs" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">FAQs</a>
-        <a href="#pricing" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Pricing</a>
+        <a href="#pricing" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Plans</a>
       </div>
       <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
         <a href="https://github.com/servletcloud/fstache" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-primary font-medium transition-colors duration-300 no-underline">GitHub</a>
