@@ -10,13 +10,19 @@
         <a href="#faqs" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">FAQs</a>
         <a href="#pricing" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Pricing</a>
       </div>
+      <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+        <a href="https://github.com/servletcloud/fstache" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-primary font-medium transition-colors duration-300 no-underline">GitHub</a>
+        <a href="https://github.com/servletcloud/fstache/tree/main/demo/templates" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-primary font-medium transition-colors duration-300 no-underline">Templates</a>
+        <a href="https://github.com/servletcloud/fstache/blob/main/demo/data.json" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-primary font-medium transition-colors duration-300 no-underline">Data</a>
+        <a href="https://github.com/servletcloud/fstache/blob/main/tests/perf_test.py" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-primary font-medium transition-colors duration-300 no-underline">Benchmark</a>
+      </div>
 
       {{! OBJECT CONTEXT: Refactoring author info using context block scoping }}
       <div class="text-text-muted text-sm text-center">
         {{#author}}
           <p>&copy; {{year}} <a href="{{url}}" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors duration-300 no-underline">{{name}}</a>. All rights reserved.</p>
         {{/author}}
-        <p class="mt-2 text-xs opacity-70">Rendered with Chevron Mustache compiler and styled with Tailwind CSS v4.</p>
+        <p class="mt-2 text-xs opacity-70">Fstache benchmark fixture styled with Tailwind CSS v4 and Alpine.js.</p>
       </div>
     </div>
   </footer>

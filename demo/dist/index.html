@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F-Stache - The Future of Static Site Generation</title>
+  <meta name="description" content="Blazing fast mustache compiling with premium aesthetics and developer-first workflows.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS v4 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Alpine.js CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg-primary: #0b0f19;
+      --color-card-bg: rgba(17, 24, 39, 0.7);
+      --color-card-border: rgba(255, 255, 255, 0.08);
+      --color-card-hover-border: rgba(99, 102, 241, 0.4);
+
+      --color-text-primary: #f3f4f6;
+      --color-text-secondary: #9ca3af;
+      --color-text-muted: #6b7280;
+
+      --color-primary: #6366f1;
+      --color-primary-hover: #4f46e5;
+      --color-primary-glow: rgba(99, 102, 241, 0.15);
+
+      --color-secondary: #06b6d4;
+      --color-secondary-glow: rgba(6, 182, 212, 0.15);
+
+      --color-accent: #ec4899;
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    [x-cloak] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="bg-bg-primary text-text-primary font-sans antialiased overflow-x-hidden relative min-h-screen">
+
+  <!-- Ambient Background Glows -->
+  <div class="absolute w-[600px] h-[600px] -top-[150px] -left-[150px] bg-[radial-gradient(circle,rgba(99,102,241,0.15)_0%,rgba(11,15,25,0)_70%)] pointer-events-none -z-10"></div>
+  <div class="absolute w-[650px] h-[650px] top-[400px] -right-[200px] bg-[radial-gradient(circle,rgba(6,182,212,0.15)_0%,rgba(11,15,25,0)_70%)] pointer-events-none -z-10"></div>
+
+    <div class="bg-slate-900/80 backdrop-blur-sm border-b border-card-border py-2 text-center text-xs text-text-muted flex justify-center items-center gap-2">
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+      All core compilation pipelines operational (Spec compliant v1.1.2)
+    </div>
+
+  <header id="site-header" x-data="{ mobileMenuOpen: false }" class="backdrop-blur-md bg-bg-primary/70 border-b border-card-border fixed top-8 left-0 w-full z-50 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center relative">
+      <a href="#" class="flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-text-primary no-underline">
+        <span class="bg-gradient-to-br from-primary to-secondary text-white w-8 h-8 rounded-lg flex items-center justify-center font-extrabold text-lg shadow-[0_4px_12px_rgba(99,102,241,0.3)]">{</span>
+        <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">F-Stache</span>
+      </a>
+
+      <nav class="flex items-center gap-8">
+        <div class="hidden md:flex gap-8">
+            <a href="#features" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Features</a>
+            <a href="#architecture" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Architecture</a>
+            <a href="#testimonials" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Testimonials</a>
+            <a href="#sitemap" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Sitemap</a>
+            <a href="#comparison" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Comparison</a>
+            <a href="#blog" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Blog</a>
+            <a href="#changelog" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Changelog</a>
+            <a href="#faqs" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">FAQs</a>
+            <a href="#pricing" class="text-text-secondary hover:text-text-primary font-medium text-[0.95rem] transition-colors duration-300 no-underline">Pricing</a>
+        </div>
+        <a href="#pricing" class="hidden sm:inline-flex bg-gradient-to-br from-primary to-primary-hover text-white px-5 py-2 rounded-lg font-semibold text-sm shadow-[0_4px_14px_rgba(99,102,241,0.4)] hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(99,102,241,0.6)] transition-all duration-300 no-underline">Get Started</a>
+
+        <!-- Mobile Hamburger Menu Button -->
+        <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-text-primary hover:text-primary transition-colors focus:outline-none cursor-pointer" aria-label="Toggle Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            <path x-show="mobileMenuOpen" x-cloak stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </nav>
+
+      <!-- Mobile Menu Drawer -->
+      <div x-show="mobileMenuOpen"
+           x-transition:enter="transition ease-out duration-200"
+           x-transition:enter-start="opacity-0 -translate-y-4"
+           x-transition:enter-end="opacity-100 translate-y-0"
+           x-transition:leave="transition ease-in duration-150"
+           x-transition:leave-start="opacity-100 translate-y-0"
+           x-transition:leave-end="opacity-0 -translate-y-4"
+           x-cloak
+           @click.away="mobileMenuOpen = false"
+           class="md:hidden absolute top-full left-0 w-full bg-bg-primary/95 border-b border-card-border backdrop-blur-lg py-6 px-6 flex flex-col gap-4 shadow-xl z-40">
+          <a href="#features" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Features</a>
+          <a href="#architecture" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Architecture</a>
+          <a href="#testimonials" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Testimonials</a>
+          <a href="#sitemap" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Sitemap</a>
+          <a href="#comparison" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Comparison</a>
+          <a href="#blog" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Blog</a>
+          <a href="#changelog" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Changelog</a>
+          <a href="#faqs" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">FAQs</a>
+          <a href="#pricing" @click="mobileMenuOpen = false" class="text-text-secondary hover:text-text-primary font-medium text-lg transition-colors duration-300 no-underline py-2">Pricing</a>
+        <a href="#pricing" @click="mobileMenuOpen = false" class="bg-gradient-to-br from-primary to-primary-hover text-white px-5 py-3 rounded-lg font-semibold text-center text-sm shadow-[0_4px_14px_rgba(99,102,241,0.4)] transition-all duration-300 no-underline mt-2">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+<div class="mt-32 w-full max-w-6xl mx-auto px-6">
+  <div class="bg-gradient-to-r from-primary/10 to-secondary/10 border border-card-border rounded-2xl p-4 text-center text-sm backdrop-blur-md">
+    <span class="bg-primary/20 text-primary-hover border border-primary/30 px-2.5 py-0.5 rounded-full text-xs font-bold mr-2">LAUNCH EVENT</span> F-Stache v2.0 Playgrounds are now live! Explore the compiler sandbox below. <a href="#architecture" class="underline font-medium hover:opacity-80 transition-opacity ml-1">Try simulator &rarr;</a>
+  </div>
+  <div class="mt-4 bg-card-bg border border-card-border rounded-2xl p-4 text-center text-sm text-text-secondary backdrop-blur-md">
+    This page is the public Fstache benchmark demo. Inspect the
+    <a href="https://github.com/servletcloud/fstache" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors duration-300 no-underline">GitHub repo</a>,
+    <a href="https://github.com/servletcloud/fstache/tree/main/demo/templates" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors duration-300 no-underline">Mustache templates</a>,
+    <a href="https://github.com/servletcloud/fstache/blob/main/demo/data.json" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors duration-300 no-underline">JSON data</a>, and
+    <a href="https://github.com/servletcloud/fstache/blob/main/tests/perf_test.py" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors duration-300 no-underline">benchmark script</a>.
+  </div>
+</div>
+
+<main class="max-w-6xl mx-auto px-6">
+  <!-- Hero Section -->
+  <section class="relative text-center max-w-4xl mx-auto pt-16 pb-20">
+    <div class="text-xs font-bold tracking-[0.15em] uppercase text-accent mb-6">The Future of Static Site Generation</div>
+    <h1 class="font-display text-5xl md:text-7xl font-extrabold leading-none mb-6 tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+      <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">F-Stache:</span><br>Blazing Fast Templating
+    </h1>
+    <p class="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-10 font-normal">Compile complex mustache layouts in microseconds, zero overhead, pure performance.</p>
+    <div class="flex justify-center gap-5 mb-20">
+      <a href="#pricing" class="inline-flex items-center justify-center px-8 py-3.5 rounded-xl font-semibold text-base bg-gradient-to-br from-primary to-primary-hover text-white shadow-[0_4px_20px_rgba(99,102,241,0.4)] hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(99,102,241,0.6)] transition-all duration-300 no-underline">Get Started</a>
+      <a href="#features" class="inline-flex items-center justify-center px-8 py-3.5 rounded-xl font-semibold text-base bg-white/5 text-text-primary border border-card-border hover:bg-white/10 hover:border-white/20 hover:-translate-y-0.5 transition-all duration-300 no-underline">View Docs</a>
+    </div>
+  
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+        <div class="bg-card-bg border border-card-border rounded-2xl p-7 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-0.5 transition-all duration-300">
+          <div class="font-display text-4xl font-bold bg-gradient-to-b from-white to-text-secondary bg-clip-text text-transparent mb-1">1.2ms</div>
+          <div class="text-text-muted text-[0.85rem] font-medium uppercase tracking-wider">Avg. Render Time</div>
+        </div>
+        <div class="bg-card-bg border border-card-border rounded-2xl p-7 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-0.5 transition-all duration-300">
+          <div class="font-display text-4xl font-bold bg-gradient-to-b from-white to-text-secondary bg-clip-text text-transparent mb-1">100%</div>
+          <div class="text-text-muted text-[0.85rem] font-medium uppercase tracking-wider">Spec Compliant</div>
+        </div>
+        <div class="bg-card-bg border border-card-border rounded-2xl p-7 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-0.5 transition-all duration-300">
+          <div class="font-display text-4xl font-bold bg-gradient-to-b from-white to-text-secondary bg-clip-text text-transparent mb-1">Zero</div>
+          <div class="text-text-muted text-[0.85rem] font-medium uppercase tracking-wider">JS Dependencies</div>
+        </div>
+    </div>
+  </section>
+  
+  <!-- Features Section -->
+    <section id="features" class="py-24 border-t border-card-border">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Performance Stack</div>
+        <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Built for Modern Templating</h2>
+        <p class="text-text-secondary">Everything you need to compile logic-less mustache templates into optimized HTML instantly.</p>
+      </div>
+    
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+          <div class="bg-card-bg border border-card-border rounded-[20px] p-10 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
+            <div class="text-3xl w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 border border-primary/20">⚡</div>
+            <h3 class="font-display text-xl font-semibold mb-3">Microsecond Execution</h3>
+            <p class="text-text-secondary text-[0.95rem] leading-relaxed">Engineered with maximum efficiency. Mustache templates render with minimal memory footprint and zero CPU waste.</p>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-[20px] p-10 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
+            <div class="text-3xl w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 border border-primary/20">🧩</div>
+            <h3 class="font-display text-xl font-semibold mb-3">Modular Partials</h3>
+            <p class="text-text-secondary text-[0.95rem] leading-relaxed">Effortlessly compose complex layouts. Nest headers, footers, card grids, and custom wrappers with ease.</p>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-[20px] p-10 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
+            <div class="text-3xl w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 border border-primary/20">🎨</div>
+            <h3 class="font-display text-xl font-semibold mb-3">Aesthetic-First Design</h3>
+            <p class="text-text-secondary text-[0.95rem] leading-relaxed">Includes fully responsive CSS custom properties, glassmorphism containers, and beautiful gradients out of the box.</p>
+          </div>
+      </div>
+    </section>
+
+  <!-- Architecture Showcase -->
+    <section id="architecture" class="py-16">
+      <div class="bg-gradient-to-b from-slate-900/40 to-bg-primary/80 border border-card-border rounded-3xl p-12 backdrop-blur-sm">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">How It Works</div>
+            <h2 class="font-display text-3xl font-bold tracking-tight mb-6">Pure Logic-less compilation</h2>
+            <p class="text-text-secondary mb-6 text-[0.95rem] leading-relaxed">
+              F-Stache uses clean, logic-less Mustache syntax combined with external JSON schemas to compile robust HTML structures.
+            </p>
+            <p class="text-text-muted text-[0.9rem] leading-relaxed">
+              Separate structure from details. Try modifying context variables on the right to simulate live templating.
+            </p>
+          </div>
+    
+          <!-- Live Sandbox Playground using AlpineJS -->
+          <div x-data="{ name: 'Developer', speed: '1.2ms' }" class="bg-black/40 border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col gap-5">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
+              <span class="text-xs font-bold text-primary tracking-wider uppercase">Interactive Sandbox</span>
+              <span class="text-emerald-400 text-xs font-mono bg-emerald-500/10 px-2 py-0.5 rounded-full">F-Stache Simulator</span>
+            </div>
+    
+            <div class="flex flex-col gap-3">
+              <label class="text-xs font-bold text-text-secondary uppercase">1. Edit Context Data (JSON)</label>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <span class="text-[0.7rem] font-semibold text-text-muted block mb-1">Name</span>
+                  <input x-model="name" class="w-full bg-white/5 border border-card-border rounded-lg px-3 py-1.5 text-sm font-mono text-emerald-300 focus:outline-none focus:border-primary transition-all duration-300" />
+                </div>
+                <div>
+                  <span class="text-[0.7rem] font-semibold text-text-muted block mb-1">Render Speed</span>
+                  <input x-model="speed" class="w-full bg-white/5 border border-card-border rounded-lg px-3 py-1.5 text-sm font-mono text-cyan-300 focus:outline-none focus:border-secondary transition-all duration-300" />
+                </div>
+              </div>
+            </div>
+    
+            <div class="flex flex-col gap-2">
+              <span class="text-xs font-bold text-text-secondary uppercase">2. Mustache Template</span>
+              <div class="bg-slate-950/60 rounded-lg p-3 font-mono text-[0.8rem] text-slate-300 border border-white/5">
+                &lt;p&gt;Hello, <span class="text-primary font-bold">{{name}}</span>! Compiled in <span class="text-secondary font-bold">{{speed}}</span>.&lt;/p&gt;
+              </div>
+            </div>
+    
+            <div class="flex flex-col gap-2">
+              <span class="text-xs font-bold text-text-secondary uppercase">3. Rendered Output HTML</span>
+              <div class="bg-slate-950/90 rounded-lg p-3.5 font-mono text-[0.85rem] text-white border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]">
+                &lt;p&gt;Hello, <span x-text="name" class="text-emerald-400 font-bold"></span>! Compiled in <span x-text="speed" class="text-cyan-400 font-bold"></span>.&lt;/p&gt;
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  <!-- Testimonials Section -->
+    <section id="testimonials" class="py-24 border-t border-card-border">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Customer Stories</div>
+        <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Trusted by Scale Developers</h2>
+        <p class="text-text-secondary">Read how companies are speeding up their render times with F-Stache.</p>
+      </div>
+    
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="bg-card-bg border border-card-border rounded-2xl p-8 backdrop-blur-md hover:border-card-hover-border transition-all duration-300 flex flex-col justify-between">
+            <p class="text-text-primary text-lg italic mb-6">"Compiling our product catalog documentation went from 8 seconds to 12 milliseconds. F-Stache is an absolute game-changer for static site generation."</p>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-2xl border border-card-border">⚡</div>
+              <div>
+                <h4 class="font-bold text-text-primary text-sm">Sarah Chen</h4>
+                <p class="text-text-muted text-xs font-semibold">VP of Engineering at DocuFlow</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl p-8 backdrop-blur-md hover:border-card-hover-border transition-all duration-300 flex flex-col justify-between">
+            <p class="text-text-primary text-lg italic mb-6">"We integrated F-Stache into our edge workers. It renders heavily-nested static dashboards with zero latency spikes and under 2ms TTFB."</p>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-2xl border border-card-border">🌐</div>
+              <div>
+                <h4 class="font-bold text-text-primary text-sm">Marcus Vance</h4>
+                <p class="text-text-muted text-xs font-semibold">Principal Edge Architect at CDNify</p>
+              </div>
+            </div>
+          </div>
+      </div>
+    </section>
+
+  <!-- FAQ Section -->
+    <section id="faqs" class="py-24 border-t border-card-border" x-data="{ activeFaq: null }">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Frequently Asked Questions</div>
+        <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Got Questions? We Have Answers</h2>
+        <p class="text-text-secondary">Learn more about Mustache compiling and layout strategies.</p>
+      </div>
+    
+      <div class="max-w-3xl mx-auto flex flex-col gap-4">
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-1' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-1' ? null : 'faq-1'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>Why is Mustache called 'logic-less' templating?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-1' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-1'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              Because it doesn't contain explicit conditional logic statements (like 'if/else' or loops). The rendering behavior is driven entirely by the structure of the data you pass in. This keeps templates highly readable, maintainable, and extremely performant.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-2' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-2' ? null : 'faq-2'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>What is the benefit of using unescaped HTML tags?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-2' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-2'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              By default, variables are HTML-escaped to prevent XSS attacks. Using triple braces allows you to inject raw, styled HTML snippets directly into the layout from trusted CMS sources.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-3' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-3' ? null : 'faq-3'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>Can I nest partial templates dynamically?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-3' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-3'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              Yes, Mustache supports nesting partial templates. Partials are loaded at compile time, which enables complex layout composition while maintaining maximum performance.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-4' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-4' ? null : 'faq-4'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>What is context stack bubbling and how is it resolved?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-4' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-4'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              Mustache searches parent scopes if a variable is not found in the current object context. To prevent infinite loops during recursion, always specify empty termination properties (like 'children: []') on child records.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-5' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-5' ? null : 'faq-5'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>How does dynamic delimiter switching work?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-5' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-5'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              Using the syntax '{{=&lt;% %&gt;=}}', you can temporarily redefine Mustache tags to '&lt;%' and '%&gt;'. This is highly useful when compiling content that naturally uses double curlies, like AngularJS or Vue markup.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-6' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-6' ? null : 'faq-6'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>Is there a production-ready CLI compiler for pipelines?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-6' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-6'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              Yes. F-Stache compiles using Python's UV runner for sandbox Chevron builds, or can be packaged inside Docker containers to run standard Mustache compilers in CI/CD pipelines.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-7' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-7' ? null : 'faq-7'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>Can I style compiled HTML templates with Tailwind CSS?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-7' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-7'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              Absolutely. By referencing a browser compilation script or incorporating the Tailwind compiler, you can style all templates using standard utility classes and responsive grids.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-8' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-8' ? null : 'faq-8'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>How does the implicit iterator work?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-8' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-8'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              When looping over plain arrays of strings or numbers, the implicit iterator '{{.}}' acts as a placeholder representing the current array element, keeping your JSON files flat and lightweight.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-9' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-9' ? null : 'faq-9'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>Can I use Mustache templates for email generation?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-9' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-9'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              Absolutely. Because Mustache outputs static HTML and does not require JavaScript engines or runtime dependencies, it is the industry standard for compiling transactional HTML email templates with embedded inline CSS.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-10' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-10' ? null : 'faq-10'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>What is the difference between Mustache and Handlebars?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-10' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-10'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              Handlebars is a superset of Mustache. While Mustache enforces a strict logic-less standard without helpers or custom blocks, Handlebars extends the syntax to support custom registerHelper blocks, execution logic, and dynamic paths.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-11' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-11' ? null : 'faq-11'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>Does F-Stache support server-side rendering (SSR)?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-11' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-11'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              Yes. Due to the high execution speed (under 1.5ms per render), F-Stache can be deployed inside Node.js, Go, or Python web servers to process server-side rendering for millions of requests with minimal memory overhead.
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300" :class="activeFaq === 'faq-12' ? 'border-primary/50 bg-slate-900/60' : ''">
+            <button @click="activeFaq = activeFaq === 'faq-12' ? null : 'faq-12'" class="w-full text-left px-8 py-5 flex justify-between items-center font-semibold text-lg text-text-primary focus:outline-none cursor-pointer">
+              <span>How do I secure Mustache template injection paths?</span>
+              <svg class="w-5 h-5 text-text-muted transition-transform duration-300" :class="activeFaq === 'faq-12' ? 'rotate-180 text-primary' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div x-show="activeFaq === 'faq-12'" x-transition x-cloak class="px-8 pb-6 text-text-secondary text-[0.95rem] leading-relaxed border-t border-card-border/40 pt-4">
+              Template injection occurs when untrusted user input is directly evaluated as template source code. Always separate static layout structure from runtime data variables by pre-defining all compiled layouts and validating variables against JSON schemas before render execution.
+            </div>
+          </div>
+      </div>
+    </section>
+
+  <!-- Recursive Partials Showcase -->
+    <section id="sitemap" class="py-24 border-t border-card-border">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Resource Index</div>
+          <h2 class="font-display text-4xl font-bold tracking-tight mb-6">Recursive Document Sitemap</h2>
+          <p class="text-text-secondary mb-6 text-[0.95rem] leading-relaxed">
+            F-Stache renders complex hierarchy schemas dynamically. This sitemap explorer component resolves nested data relationships recursively using self-referencing templates.
+          </p>
+          <p class="text-text-muted text-[0.9rem] leading-relaxed">
+            Verify compliance: every leaf node resolves to its base context and terminates cleanly once the recursive children arrays resolve as falsey or empty, preventing context leakage.
+          </p>
+        </div>
+    
+        <!-- Document Tree Widget Box -->
+        <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md shadow-2xl relative overflow-hidden max-w-[480px] w-full mx-auto lg:mx-0">
+          <div class="flex items-center justify-between border-b border-card-border pb-4 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-primary/40 animate-ping"></span>
+              <span class="text-xs font-bold uppercase tracking-wider text-text-muted">FSTACHE INDEXER</span>
+            </div>
+            <span class="text-xs font-mono text-primary font-bold">docs_tree.json</span>
+          </div>
+    
+          <div class="bg-black/30 border border-white/5 rounded-2xl p-5 overflow-y-auto max-h-[320px] shadow-[inset_0_2px_8px_rgba(0,0,0,0.4)]">
+            <ul class="flex flex-col gap-1 pr-2">
+                <li class="list-none my-1 select-none">
+                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                      <!-- Folder Icon -->
+                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                      </svg>
+                    <span class="font-medium truncate">Documentation Blueprint</span>
+                  </div>
+                
+                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                        <li class="list-none my-1 select-none">
+                          <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                              <!-- Folder Icon -->
+                              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                              </svg>
+                            <span class="font-medium truncate">Getting Started</span>
+                          </div>
+                        
+                            <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Introduction</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Quick Installation</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Advanced Configuration</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                        <li class="list-none my-1 select-none">
+                                          <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                              <!-- Folder Icon -->
+                                              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                              </svg>
+                                            <span class="font-medium truncate">Docker Environments</span>
+                                          </div>
+                                        
+                                            <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                            </ul>
+                                        </li>
+        <li class="list-none my-1 select-none">
+                                          <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                              <!-- Folder Icon -->
+                                              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                              </svg>
+                                            <span class="font-medium truncate">UV CLI Integrations</span>
+                                          </div>
+                                        
+                                            <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                            </ul>
+                                        </li>
+        <li class="list-none my-1 select-none">
+                                          <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                              <!-- Folder Icon -->
+                                              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                              </svg>
+                                            <span class="font-medium truncate">Docker Swarm Configurations</span>
+                                          </div>
+                                        
+                                            <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                            </ul>
+                                        </li>
+        <li class="list-none my-1 select-none">
+                                          <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                              <!-- Folder Icon -->
+                                              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                              </svg>
+                                            <span class="font-medium truncate">Kubernetes Sidecar Injectors</span>
+                                          </div>
+                                        
+                                            <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                            </ul>
+                                        </li>
+    </ul>
+                                </li>
+    </ul>
+                        </li>
+        <li class="list-none my-1 select-none">
+                          <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                              <!-- Folder Icon -->
+                              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                              </svg>
+                            <span class="font-medium truncate">Spec Compliance Guide</span>
+                          </div>
+                        
+                            <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Core Interpolation</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Template Inheritance Layouts</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Delimiter Modifications</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Escaping Rules &amp; Controls</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Implicit Iteration Scopes</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+    </ul>
+                        </li>
+        <li class="list-none my-1 select-none">
+                          <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                              <!-- Folder Icon -->
+                              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                              </svg>
+                            <span class="font-medium truncate">Performance Tuning</span>
+                          </div>
+                        
+                            <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Pre-compilation Caching</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Minification Workflows</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Memory Overhead Analysis</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Static Code Elimination</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+    </ul>
+                        </li>
+        <li class="list-none my-1 select-none">
+                          <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                              <!-- Folder Icon -->
+                              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                              </svg>
+                            <span class="font-medium truncate">Integrations</span>
+                          </div>
+                        
+                            <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Next.js Static Slots</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Vite Bundler Plugin</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Rust Cargo Bindings</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Webpack Loader Hooks</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+    </ul>
+                        </li>
+        <li class="list-none my-1 select-none">
+                          <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                              <!-- Folder Icon -->
+                              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                              </svg>
+                            <span class="font-medium truncate">API Specifications Reference</span>
+                          </div>
+                        
+                            <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Compile Endpoint API</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Context Validation Rules</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Metadata Payload Format</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Rate Limiting Headers</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+        <li class="list-none my-1 select-none">
+                                  <div class="flex items-center gap-2.5 py-1.5 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm text-text-secondary hover:text-text-primary cursor-pointer">
+                                      <!-- Folder Icon -->
+                                      <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                      </svg>
+                                    <span class="font-medium truncate">Error Response Handlers</span>
+                                  </div>
+                                
+                                    <ul class="pl-4 ml-2 border-l border-card-border mt-1 flex flex-col gap-0.5">
+                                    </ul>
+                                </li>
+    </ul>
+                        </li>
+    </ul>
+                </li>
+        </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  <!-- Comparison Section -->
+    <section id="comparison" class="py-24 border-t border-card-border">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Feature Comparison</div>
+        <h2 class="font-display text-4xl font-bold tracking-tight mb-4">F-Stache vs The Industry</h2>
+        <p class="text-text-secondary">A highly detailed specifications breakdown comparing F-Stache against other standard engines.</p>
+      </div>
+    
+      <div class="overflow-x-auto bg-card-bg border border-card-border rounded-3xl backdrop-blur-md shadow-2xl">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-card-border text-xs uppercase tracking-wider text-text-muted font-bold bg-slate-900/60">
+              <th class="py-5 px-6">Compiler Feature</th>
+              <th class="py-5 px-6 text-primary">F-Stache</th>
+              <th class="py-5 px-6">Handlebars</th>
+              <th class="py-5 px-6">Jinja2</th>
+              <th class="py-5 px-6">Liquid</th>
+              <th class="py-5 px-6">Pug</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-card-border/50 text-sm">
+              <tr class="hover:bg-white/[0.02] transition-colors duration-200">
+                <td class="py-5 px-6 font-semibold text-text-primary">Static Compilation Speed</td>
+                <td class="py-5 px-6 text-emerald-400 font-bold bg-emerald-500/[0.02]">1.2ms (Microseconds)</td>
+                <td class="py-5 px-6 text-text-secondary">28ms</td>
+                <td class="py-5 px-6 text-text-secondary">45ms</td>
+                <td class="py-5 px-6 text-text-secondary">82ms</td>
+                <td class="py-5 px-6 text-text-secondary">110ms</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02] transition-colors duration-200">
+                <td class="py-5 px-6 font-semibold text-text-primary">JS Runtime Bloat</td>
+                <td class="py-5 px-6 text-emerald-400 font-bold bg-emerald-500/[0.02]">Zero Dependencies</td>
+                <td class="py-5 px-6 text-text-secondary">320KiB Bundled JS</td>
+                <td class="py-5 px-6 text-text-secondary">Not Applicable</td>
+                <td class="py-5 px-6 text-text-secondary">210KiB Bundled JS</td>
+                <td class="py-5 px-6 text-text-secondary">450KiB Bundled JS</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02] transition-colors duration-200">
+                <td class="py-5 px-6 font-semibold text-text-primary">Delimiter Customization</td>
+                <td class="py-5 px-6 text-emerald-400 font-bold bg-emerald-500/[0.02]">Native Delimiter Switching</td>
+                <td class="py-5 px-6 text-text-secondary">Configurable (Requires JS)</td>
+                <td class="py-5 px-6 text-text-secondary">Configurable (Requires Python)</td>
+                <td class="py-5 px-6 text-text-secondary">Fixed syntax</td>
+                <td class="py-5 px-6 text-text-secondary">Not supported</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02] transition-colors duration-200">
+                <td class="py-5 px-6 font-semibold text-text-primary">Logic-less Constraints</td>
+                <td class="py-5 px-6 text-emerald-400 font-bold bg-emerald-500/[0.02]">Strict (Separates concerns)</td>
+                <td class="py-5 px-6 text-text-secondary">Moderate (Helpers allowed)</td>
+                <td class="py-5 px-6 text-text-secondary">None (Full logic code)</td>
+                <td class="py-5 px-6 text-text-secondary">None (Full logic tags)</td>
+                <td class="py-5 px-6 text-text-secondary">None (Full JS execution)</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02] transition-colors duration-200">
+                <td class="py-5 px-6 font-semibold text-text-primary">Edge Worker Execution</td>
+                <td class="py-5 px-6 text-emerald-400 font-bold bg-emerald-500/[0.02]">Highly optimized (Pure static)</td>
+                <td class="py-5 px-6 text-text-secondary">Requires heavy polyfills</td>
+                <td class="py-5 px-6 text-text-secondary">Unsupported</td>
+                <td class="py-5 px-6 text-text-secondary">Slow bootstrap</td>
+                <td class="py-5 px-6 text-text-secondary">Unsupported</td>
+              </tr>
+              <tr class="hover:bg-white/[0.02] transition-colors duration-200">
+                <td class="py-5 px-6 font-semibold text-text-primary">Recursive Partial Invocations</td>
+                <td class="py-5 px-6 text-emerald-400 font-bold bg-emerald-500/[0.02]">Supported natively</td>
+                <td class="py-5 px-6 text-text-secondary">Requires custom helpers</td>
+                <td class="py-5 px-6 text-text-secondary">Supported via macros</td>
+                <td class="py-5 px-6 text-text-secondary">Supported</td>
+                <td class="py-5 px-6 text-text-secondary">Supported via mixins</td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  <!-- Blog Section -->
+    <section id="blog" class="py-24 border-t border-card-border">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Resources & Articles</div>
+        <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Latest Insights from Our Team</h2>
+        <p class="text-text-secondary">Explore technical guides, case studies, and tutorials on Mustache compile engines.</p>
+      </div>
+    
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[0.7rem] font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-md">COMPILER</span>
+                <span class="text-xs text-text-muted font-medium">5 min read</span>
+              </div>
+              <h3 class="font-display text-lg font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-300">Unlocking Microsecond Render Times in Static Site Generators</h3>
+              <p class="text-text-secondary text-sm leading-relaxed mb-6">How we re-engineered string concatenation tokenizers to bypass standard engine bottlenecks, achieving rendering under 1.5ms for production dashboards.</p>
+            </div>
+            <div class="flex justify-between items-center border-t border-card-border/40 pt-4 mt-auto">
+              <span class="text-xs text-text-muted">By <span class="font-semibold text-text-primary">Sarah Chen</span></span>
+              <span class="text-xs text-text-muted">June 15, 2026</span>
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[0.7rem] font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-md">AESTHETICS</span>
+                <span class="text-xs text-text-muted font-medium">4 min read</span>
+              </div>
+              <h3 class="font-display text-lg font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-300">Designing Sleek Glassmorphism UIs with Tailwind CSS v4</h3>
+              <p class="text-text-secondary text-sm leading-relaxed mb-6">A comprehensive deep dive into new utility variables, backdrop-filters, and gradient borders in Tailwind v4 that compose modern dashboard environments.</p>
+            </div>
+            <div class="flex justify-between items-center border-t border-card-border/40 pt-4 mt-auto">
+              <span class="text-xs text-text-muted">By <span class="font-semibold text-text-primary">David Lin</span></span>
+              <span class="text-xs text-text-muted">June 12, 2026</span>
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[0.7rem] font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-md">SPECIFICATION</span>
+                <span class="text-xs text-text-muted font-medium">3 min read</span>
+              </div>
+              <h3 class="font-display text-lg font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-300">The Power of Delimiter Switching in Complex Markup</h3>
+              <p class="text-text-secondary text-sm leading-relaxed mb-6">Mustache delimiter switching enables literal syntax blocks for other templates (like Vue, Angular, or Django templates) without escape sequence issues.</p>
+            </div>
+            <div class="flex justify-between items-center border-t border-card-border/40 pt-4 mt-auto">
+              <span class="text-xs text-text-muted">By <span class="font-semibold text-text-primary">Elena Rostova</span></span>
+              <span class="text-xs text-text-muted">June 08, 2026</span>
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[0.7rem] font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-md">PERFORMANCE</span>
+                <span class="text-xs text-text-muted font-medium">6 min read</span>
+              </div>
+              <h3 class="font-display text-lg font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-300">Edge Worker Renders: Bypassing Cold Start Latencies</h3>
+              <p class="text-text-secondary text-sm leading-relaxed mb-6">Edge architectures require light, zero-dependency HTML pipelines. We demonstrate how eliminating bundle dependencies enables 2ms TTFB across regions.</p>
+            </div>
+            <div class="flex justify-between items-center border-t border-card-border/40 pt-4 mt-auto">
+              <span class="text-xs text-text-muted">By <span class="font-semibold text-text-primary">Marcus Vance</span></span>
+              <span class="text-xs text-text-muted">May 30, 2026</span>
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[0.7rem] font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-md">CASE STUDY</span>
+                <span class="text-xs text-text-muted font-medium">8 min read</span>
+              </div>
+              <h3 class="font-display text-lg font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-300">How CDNify Scaled Dashboards to 10M Monthly Readers</h3>
+              <p class="text-text-secondary text-sm leading-relaxed mb-6">A technical case study on how CDNify transitioned their analytics status panel to pre-rendered Mustache layouts, slashing server bills by 85%.</p>
+            </div>
+            <div class="flex justify-between items-center border-t border-card-border/40 pt-4 mt-auto">
+              <span class="text-xs text-text-muted">By <span class="font-semibold text-text-primary">Jessica Miller</span></span>
+              <span class="text-xs text-text-muted">May 25, 2026</span>
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[0.7rem] font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-md">API REFERENCE</span>
+                <span class="text-xs text-text-muted font-medium">4 min read</span>
+              </div>
+              <h3 class="font-display text-lg font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-300">Standardizing JSON Schema Layout Contracts</h3>
+              <p class="text-text-secondary text-sm leading-relaxed mb-6">Enforcing schema boundaries between data services and template presentation layers ensures safety, code cleanliness, and rapid UI iteration.</p>
+            </div>
+            <div class="flex justify-between items-center border-t border-card-border/40 pt-4 mt-auto">
+              <span class="text-xs text-text-muted">By <span class="font-semibold text-text-primary">Alex Mercer</span></span>
+              <span class="text-xs text-text-muted">May 18, 2026</span>
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[0.7rem] font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-md">SECURITY</span>
+                <span class="text-xs text-text-muted font-medium">5 min read</span>
+              </div>
+              <h3 class="font-display text-lg font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-300">Mitigating Template Injection Vulnerabilities in Static Sites</h3>
+              <p class="text-text-secondary text-sm leading-relaxed mb-6">Template injection occurs when untrusted user inputs are dynamically compiled. We analyze safety controls, sandboxed build nodes, and HTML escaping protocols in Mustache.</p>
+            </div>
+            <div class="flex justify-between items-center border-t border-card-border/40 pt-4 mt-auto">
+              <span class="text-xs text-text-muted">By <span class="font-semibold text-text-primary">Liam Vance</span></span>
+              <span class="text-xs text-text-muted">May 10, 2026</span>
+            </div>
+          </div>
+          <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[0.7rem] font-bold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-md">EDGE COMPUTING</span>
+                <span class="text-xs text-text-muted font-medium">7 min read</span>
+              </div>
+              <h3 class="font-display text-lg font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-300">Deploying Dynamic Static Pre-Renders to Cloudflare Workers</h3>
+              <p class="text-text-secondary text-sm leading-relaxed mb-6">By combining CDN edge logic with pre-compiled layout nodes, developers can achieve static generation speed with dynamic personalization parameters on the fly.</p>
+            </div>
+            <div class="flex justify-between items-center border-t border-card-border/40 pt-4 mt-auto">
+              <span class="text-xs text-text-muted">By <span class="font-semibold text-text-primary">Sophia Loren</span></span>
+              <span class="text-xs text-text-muted">May 02, 2026</span>
+            </div>
+          </div>
+      </div>
+    </section>
+
+  <!-- Changelog Section -->
+    <section id="changelog" class="py-24 border-t border-card-border">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Version History</div>
+        <h2 class="font-display text-4xl font-bold tracking-tight mb-4">F-Stache Changelog</h2>
+        <p class="text-text-secondary">Track our progress, release tags, performance milestones, and specs compliance updates.</p>
+      </div>
+    
+      <div class="max-w-4xl mx-auto relative before:absolute before:top-0 before:bottom-0 before:left-4 md:before:left-1/2 before:-translate-x-1/2 before:w-0.5 before:bg-card-border">
+          <div class="relative flex flex-col md:flex-row justify-between items-start mb-16 md:odd:flex-row-reverse group">
+            <!-- Circle indicator -->
+            <div class="absolute left-4 md:left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-bg-primary border-4 border-primary/40 group-hover:border-primary transition-colors duration-300 z-10"></div>
+    
+            <!-- Empty Space on other side for grid alignment on desktop -->
+            <div class="hidden md:block w-[45%]"></div>
+    
+            <!-- Content Box -->
+            <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border transition-colors duration-300 w-[90%] md:w-[45%] ml-12 md:ml-0 shadow-xl">
+              <div class="flex justify-between items-center mb-4">
+                <span class="font-display text-xl font-bold text-text-primary">v2.0.0-beta</span>
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">June 2026</span>
+              </div>
+    
+              <div class="flex flex-col gap-4">
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-2">Additions</h4>
+                  <ul class="list-disc pl-5 text-sm text-text-secondary flex flex-col gap-1">
+                      <li>Added standard support for recursive partial templates.</li>
+                      <li>Integrated Tailwind CSS v4 support in layouts.</li>
+                      <li>Added Alpine.js interactivity slots.</li>
+                  </ul>
+                </div>
+    
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-2">Fixes & Optimizations</h4>
+                  <ul class="list-disc pl-5 text-sm text-text-secondary flex flex-col gap-1">
+                      <li>Fixed context stack bubbling lookup on empty child collections.</li>
+                      <li>Resolved whitespace stripping tags issue in nested delimiter shifts.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="relative flex flex-col md:flex-row justify-between items-start mb-16 md:odd:flex-row-reverse group">
+            <!-- Circle indicator -->
+            <div class="absolute left-4 md:left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-bg-primary border-4 border-primary/40 group-hover:border-primary transition-colors duration-300 z-10"></div>
+    
+            <!-- Empty Space on other side for grid alignment on desktop -->
+            <div class="hidden md:block w-[45%]"></div>
+    
+            <!-- Content Box -->
+            <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border transition-colors duration-300 w-[90%] md:w-[45%] ml-12 md:ml-0 shadow-xl">
+              <div class="flex justify-between items-center mb-4">
+                <span class="font-display text-xl font-bold text-text-primary">v1.4.2</span>
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">April 2026</span>
+              </div>
+    
+              <div class="flex flex-col gap-4">
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-2">Additions</h4>
+                  <ul class="list-disc pl-5 text-sm text-text-secondary flex flex-col gap-1">
+                      <li>Added implicit iterator syntax parsing.</li>
+                      <li>Introduced layout slot parent template composition.</li>
+                  </ul>
+                </div>
+    
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-2">Fixes & Optimizations</h4>
+                  <ul class="list-disc pl-5 text-sm text-text-secondary flex flex-col gap-1">
+                      <li>Resolved SVG rendering crash on Safari 16.4 browsers.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="relative flex flex-col md:flex-row justify-between items-start mb-16 md:odd:flex-row-reverse group">
+            <!-- Circle indicator -->
+            <div class="absolute left-4 md:left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-bg-primary border-4 border-primary/40 group-hover:border-primary transition-colors duration-300 z-10"></div>
+    
+            <!-- Empty Space on other side for grid alignment on desktop -->
+            <div class="hidden md:block w-[45%]"></div>
+    
+            <!-- Content Box -->
+            <div class="bg-card-bg border border-card-border rounded-3xl p-8 backdrop-blur-md hover:border-card-hover-border transition-colors duration-300 w-[90%] md:w-[45%] ml-12 md:ml-0 shadow-xl">
+              <div class="flex justify-between items-center mb-4">
+                <span class="font-display text-xl font-bold text-text-primary">v1.3.0</span>
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">January 2026</span>
+              </div>
+    
+              <div class="flex flex-col gap-4">
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-2">Additions</h4>
+                  <ul class="list-disc pl-5 text-sm text-text-secondary flex flex-col gap-1">
+                      <li>Integrated CLI compilation pipeline.</li>
+                      <li>Added triple-mustache unescaped variable injections.</li>
+                  </ul>
+                </div>
+    
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-2">Fixes & Optimizations</h4>
+                  <ul class="list-disc pl-5 text-sm text-text-secondary flex flex-col gap-1">
+                      <li>Fixed HTML character escaping logic on ampersand tags.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </section>
+
+  <!-- Pricing Section -->
+      <section id="pricing" x-data="{ billingPeriod: 'monthly' }" class="py-24 border-t border-card-border">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="text-[0.85rem] font-bold tracking-wider uppercase text-primary mb-3">Flexible Plans</div>
+          <h2 class="font-display text-4xl font-bold tracking-tight mb-4">Transparent Pricing</h2>
+          <p class="text-text-secondary">Choose the perfect compile power for your workflow.</p>
+        </div>
+    
+        <!-- Billing Toggle Switch -->
+        <div class="flex justify-center items-center gap-4 mb-16">
+          <span :class="billingPeriod === 'monthly' ? 'text-text-primary' : 'text-text-muted'" class="text-sm font-semibold transition-colors duration-300">Monthly</span>
+          <button @click="billingPeriod = billingPeriod === 'monthly' ? 'annual' : 'monthly'" class="w-12 h-6 bg-slate-800 rounded-full p-0.5 relative transition-colors duration-300 focus:outline-none cursor-pointer" aria-label="Toggle Billing Period">
+            <div :class="billingPeriod === 'annual' ? 'translate-x-6 bg-secondary' : 'translate-x-0 bg-primary'" class="w-5 h-5 rounded-full transition-transform duration-300 transform"></div>
+          </button>
+          <span :class="billingPeriod === 'annual' ? 'text-text-primary' : 'text-text-muted'" class="text-sm font-semibold transition-colors duration-300 flex items-center gap-1.5">
+            Annual
+            <span class="bg-emerald-500/10 text-emerald-400 text-[0.7rem] px-2 py-0.5 rounded-full font-bold">Save 20%</span>
+          </span>
+        </div>
+    
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center max-w-4xl mx-auto">
+            <div class="bg-card-bg border border-card-border rounded-3xl p-12 backdrop-blur-md transition-all duration-300 flex flex-col w-full max-w-[380px] relative ">
+              <h4 class="font-display text-2xl font-bold mb-4">Developer</h4>
+    
+              <!-- Dynamic Price and Period with Alpine.js -->
+              <div class="font-display text-5xl font-extrabold leading-none mb-2 flex items-baseline">
+                <span x-show="billingPeriod === 'monthly'">$0</span>
+                <span x-show="billingPeriod === 'annual'" x-cloak>$0</span>
+                <span class="text-base text-text-muted font-medium ml-1">/mo</span>
+              </div>
+    
+              <div class="text-xs text-text-muted mb-6">
+                <span x-show="billingPeriod === 'monthly'">billed monthly</span>
+                <span x-show="billingPeriod === 'annual'" x-cloak>free forever</span>
+              </div>
+    
+              <ul class="list-none mb-10 flex flex-col gap-3 flex-grow">
+                  <li class="text-[0.95rem] text-text-secondary flex items-center gap-3 before:content-['✓'] before:text-secondary before:font-bold">Standard compiler</li>
+                  <li class="text-[0.95rem] text-text-secondary flex items-center gap-3 before:content-['✓'] before:text-secondary before:font-bold">Local development mode</li>
+                  <li class="text-[0.95rem] text-text-secondary flex items-center gap-3 before:content-['✓'] before:text-secondary before:font-bold">Community Discord access</li>
+              </ul>
+              <button class="w-full border-none outline-none py-3.5 rounded-xl font-semibold text-base cursor-pointer transition-all duration-300 bg-white/5 text-text-primary border border-card-border hover:bg-white/10 hover:border-white/20 hover:-translate-y-0.5">Get Started</button>
+            </div>
+            <div class="bg-card-bg border border-card-border rounded-3xl p-12 backdrop-blur-md transition-all duration-300 flex flex-col w-full max-w-[380px] relative border-primary shadow-[0_8px_30px_rgba(99,102,241,0.15)] before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-primary before:to-secondary before:rounded-t-3xl">
+                <div class="absolute -top-3 right-6 bg-gradient-to-r from-primary to-primary-hover text-white text-[0.75rem] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-[0_4px_10px_rgba(99,102,241,0.3)]">Popular</div>
+              <h4 class="font-display text-2xl font-bold mb-4">Professional</h4>
+    
+              <!-- Dynamic Price and Period with Alpine.js -->
+              <div class="font-display text-5xl font-extrabold leading-none mb-2 flex items-baseline">
+                <span x-show="billingPeriod === 'monthly'">$12</span>
+                <span x-show="billingPeriod === 'annual'" x-cloak>$9.60</span>
+                <span class="text-base text-text-muted font-medium ml-1">/mo</span>
+              </div>
+    
+              <div class="text-xs text-text-muted mb-6">
+                <span x-show="billingPeriod === 'monthly'">billed monthly</span>
+                <span x-show="billingPeriod === 'annual'" x-cloak>billed annually ($115/yr)</span>
+              </div>
+    
+              <ul class="list-none mb-10 flex flex-col gap-3 flex-grow">
+                  <li class="text-[0.95rem] text-text-secondary flex items-center gap-3 before:content-['✓'] before:text-secondary before:font-bold">Unlimited CLI compiles</li>
+                  <li class="text-[0.95rem] text-text-secondary flex items-center gap-3 before:content-['✓'] before:text-secondary before:font-bold">Advanced partial resolution</li>
+                  <li class="text-[0.95rem] text-text-secondary flex items-center gap-3 before:content-['✓'] before:text-secondary before:font-bold">Priority email support</li>
+                  <li class="text-[0.95rem] text-text-secondary flex items-center gap-3 before:content-['✓'] before:text-secondary before:font-bold">Enterprise scale configs</li>
+              </ul>
+              <button class="w-full border-none outline-none py-3.5 rounded-xl font-semibold text-base cursor-pointer transition-all duration-300 bg-gradient-to-r from-primary to-primary-hover text-white shadow-[0_4px_14px_rgba(99,102,241,0.3)] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(99,102,241,0.5)]">Get Started</button>
+            </div>
+        </div>
+      </section>
+</main>
+
+  <footer id="site-footer" class="border-t border-card-border bg-bg-primary/90 py-16 mt-24 relative overflow-hidden">
+    <!-- Glow Effect -->
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[300px] h-[100px] bg-[radial-gradient(circle,rgba(99,102,241,0.08)_0%,rgba(11,15,25,0)_70%)] pointer-events-none z-10"></div>
+
+    <div class="max-w-6xl mx-auto px-6 flex flex-col items-center gap-8 relative z-20">
+      <div class="flex gap-10">
+        <a href="#features" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Features</a>
+        <a href="#architecture" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Architecture</a>
+        <a href="#testimonials" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Testimonials</a>
+        <a href="#faqs" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">FAQs</a>
+        <a href="#pricing" class="text-text-secondary hover:text-text-primary text-sm font-medium transition-colors duration-300 no-underline">Pricing</a>
+      </div>
+      <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+        <a href="https://github.com/servletcloud/fstache" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-primary font-medium transition-colors duration-300 no-underline">GitHub</a>
+        <a href="https://github.com/servletcloud/fstache/tree/main/demo/templates" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-primary font-medium transition-colors duration-300 no-underline">Templates</a>
+        <a href="https://github.com/servletcloud/fstache/blob/main/demo/data.json" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-primary font-medium transition-colors duration-300 no-underline">Data</a>
+        <a href="https://github.com/servletcloud/fstache/blob/main/tests/perf_test.py" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-primary font-medium transition-colors duration-300 no-underline">Benchmark</a>
+      </div>
+
+      <div class="text-text-muted text-sm text-center">
+          <p>&copy; 2026 <a href="https://github.com/fstache" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-medium transition-colors duration-300 no-underline">F-Stache Team</a>. All rights reserved.</p>
+        <p class="mt-2 text-xs opacity-70">Fstache benchmark fixture styled with Tailwind CSS v4 and Alpine.js.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -5,10 +5,10 @@
 - Dependency-free [Mustache](https://mustache.github.io/) renderer for
   [Python 3.12+](https://docs.python.org/3.12/).
 - Supports [upstream Mustache spec fixtures](https://github.com/mustache/spec),
-  including lambdas and dynamic partial names; inheritance is unsupported.
-- Built for speed; [benchmarked faster](#benchmarks) than
-  [Chevron](https://github.com/noahmorrison/chevron),
-  [mstache](https://pypi.org/project/mstache/), and
+  including lambdas and dynamic partial names; **inheritance is unsupported**.
+- Built for speed; [benchmarked](#benchmarks) at 3.3x
+  [Chevron](https://github.com/noahmorrison/chevron), 3.1x
+  [mstache](https://pypi.org/project/mstache/), and 3.5x
   [Pystache](https://github.com/defunkt/pystache).
 - [PEP 561](https://peps.python.org/pep-0561/) typed package.
 - Supports Python mappings, objects, sequences, and callables as render data.
@@ -41,10 +41,24 @@
 
 ### Methodology
 
-Every renderer variant preloads the demo template
-files and partials during setup, and uses the closest available precompiled,
-preparsed, or pretokenized representation for the layout and partials. The
-timed render loop therefore excludes disk I/O and one-time template preparation.
+- The benchmark renders a realistic, heavy marketing/docs HTML page from the
+  [source Mustache templates](demo/templates), [JSON data](demo/data.json), and
+  [perf script](tests/perf_test.py):
+  - About 100 KiB of [rendered HTML](https://servletcloud.github.io/fstache/)
+    ([source](demo/dist/index.html)) from 15 Mustache templates, including 14
+    partial files.
+  - Tailwind CSS v4 utility-heavy markup with Alpine.js attributes, inline SVG
+    icons, responsive navigation, cards, tables, accordions, and form controls.
+  - About 15 KiB of JSON context data with nested arrays for navigation,
+    feature cards, testimonials, a recursive docs tree, comparison rows, blog
+    posts, changelog entries, FAQs, and pricing plans.
+  - 42 section, inverted-section, and partial references, including 24 section
+    tags for loops and conditionals plus recursive `node` partial rendering.
+- The benchmark isolates render throughput from setup work:
+  - Each engine preloads the template files and partials during setup.
+  - Each engine uses the closest available precompiled, preparsed, or
+    pretokenized representation for the layout and partials.
+  - The timed render loop excludes disk I/O and one-time template preparation.
 
 ---
 
