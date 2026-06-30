@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "F-Stache",
+    "title": "fstache",
     "tagline": "The Future of Static Site Generation",
     "description": "Blazing fast mustache compiling with premium aesthetics and developer-first workflows."
   },
@@ -15,7 +15,7 @@
     { "name": "FAQs", "url": "#faqs" },
     { "name": "Pricing", "url": "#pricing" }
   ],
-  "marketing_banner_html": "<span class=\"bg-primary/20 text-primary-hover border border-primary/30 px-2.5 py-0.5 rounded-full text-xs font-bold mr-2\">LAUNCH EVENT</span> F-Stache v2.0 Playgrounds are now live! Explore the compiler sandbox below. <a href=\"#architecture\" class=\"underline font-medium hover:opacity-80 transition-opacity ml-1\">Try simulator &rarr;</a>",
+  "marketing_banner_html": "<span class=\"bg-primary/20 text-primary-hover border border-primary/30 px-2.5 py-0.5 rounded-full text-xs font-bold mr-2\">LAUNCH EVENT</span> fstache v2.0 Playgrounds are now live! Explore the compiler sandbox below. <a href=\"#architecture\" class=\"underline font-medium hover:opacity-80 transition-opacity ml-1\">Try simulator &rarr;</a>",
   "announcements": [],
   "hero": {
     "gradient_text": "Blazing Fast Templating",
@@ -48,13 +48,13 @@
   "testimonials": [
     {
       "avatar": "⚡",
-      "quote": "Compiling our product catalog documentation went from 8 seconds to 12 milliseconds. F-Stache is an absolute game-changer for static site generation.",
+      "quote": "Compiling our product catalog documentation went from 8 seconds to 12 milliseconds. fstache is an absolute game-changer for static site generation.",
       "author": "Sarah Chen",
       "role": "VP of Engineering at DocuFlow"
     },
     {
       "avatar": "🌐",
-      "quote": "We integrated F-Stache into our edge workers. It renders heavily-nested static dashboards with zero latency spikes and under 2ms TTFB.",
+      "quote": "We integrated fstache into our edge workers. It renders heavily-nested static dashboards with zero latency spikes and under 2ms TTFB.",
       "author": "Marcus Vance",
       "role": "Principal Edge Architect at CDNify"
     }
@@ -309,7 +309,7 @@
     {
       "id": "faq-6",
       "question": "Is there a production-ready CLI compiler for pipelines?",
-      "answer": "Yes. F-Stache compiles using Python's UV runner for sandbox Chevron builds, or can be packaged inside Docker containers to run standard Mustache compilers in CI/CD pipelines."
+      "answer": "Yes. fstache compiles using Python's UV runner for sandbox Chevron builds, or can be packaged inside Docker containers to run standard Mustache compilers in CI/CD pipelines."
     },
     {
       "id": "faq-7",
@@ -333,8 +333,8 @@
     },
     {
       "id": "faq-11",
-      "question": "Does F-Stache support server-side rendering (SSR)?",
-      "answer": "Yes. Due to the high execution speed (under 1.5ms per render), F-Stache can be deployed inside Node.js, Go, or Python web servers to process server-side rendering for millions of requests with minimal memory overhead."
+      "question": "Does fstache support server-side rendering (SSR)?",
+      "answer": "Yes. Due to the high execution speed (under 1.5ms per render), fstache can be deployed inside Node.js, Go, or Python web servers to process server-side rendering for millions of requests with minimal memory overhead."
     },
     {
       "id": "faq-12",
@@ -371,8 +371,8 @@
     }
   ],
   "author": {
-    "name": "F-Stache Team",
-    "url": "https://github.com/fstache"
+    "name": "fstache",
+    "url": "https://github.com/servletcloud/fstache"
   },
   "year": "2026"
 }
