@@ -1,5 +1,12 @@
 # Fstache
 
+[![PyPI version](https://img.shields.io/pypi/v/fstache.svg)](https://pypi.org/project/fstache/)
+[![Python versions](https://img.shields.io/pypi/pyversions/fstache.svg)](https://pypi.org/project/fstache/)
+[![CI](https://github.com/servletcloud/fstache/actions/workflows/ci.yml/badge.svg)](https://github.com/servletcloud/fstache/actions/workflows/ci.yml)
+[![Publish package](https://github.com/servletcloud/fstache/actions/workflows/publish.yml/badge.svg)](https://github.com/servletcloud/fstache/actions/workflows/publish.yml)
+[![License](https://img.shields.io/pypi/l/fstache.svg)](https://pypi.org/project/fstache/)
+[![Typed: PEP 561](https://img.shields.io/badge/typed-PEP%20561-blue.svg)](https://peps.python.org/pep-0561/)
+
 Author: [vkorobkov](https://www.linkedin.com/in/vkorobkov/)
 
 ## Overview
