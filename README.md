@@ -268,7 +268,7 @@ Inline whitespace is preserved. For example, `{{first}}  {{second}}` still
 renders with the two spaces between values.
 
 Use compact output for whitespace-insensitive output such as HTML where source
-indentation is mostly for template readability. In the current benchmark,
+indentation is mostly for template readability. In the workstation benchmark,
 `ignore_indents=True` rendered `4066.5` pages/sec versus `3102.2` pages/sec
 with standard standalone partial indentation.
 
@@ -456,19 +456,19 @@ Renderer calls return a `RenderedTemplate`:
 
 ## Benchmarks
 
-### Renderer Throughput
+### Workstation throughput
 
-| Library | Renders per second | Indentation details |
-| --- | ---: | --- |
-| Fstache | 4066.5 | **Deviates**: `ignore_indents=True` skips standard standalone partial reindentation. |
-| Fstache | 3102.2 | Follows standard standalone partial indentation. |
-| mstache | 1339.0 | **Deviates**: `keep_lines=True` keeps tag-only lines instead of collapsing them, so partial indentation is not reapplied to every partial line. |
-| mstache | 985.3 | Follows standard standalone partial indentation. |
-| Chevron | 951.1 | Follows standard standalone partial indentation. |
-| Pystache | 898.8 | Follows standard standalone partial indentation. |
+| Library | Mean time | Renders per second | Indentation details |
+| --- | ---: | ---: | --- |
+| Fstache | 0.246 ms | 4066.5 | **Deviates**: `ignore_indents=True` skips standard standalone partial reindentation. |
+| Fstache | 0.322 ms | 3102.2 | Follows standard standalone partial indentation. |
+| mstache | 0.747 ms | 1339.0 | **Deviates**: `keep_lines=True` keeps tag-only lines instead of collapsing them, so partial indentation is not reapplied to every partial line. |
+| mstache | 1.015 ms | 985.3 | Follows standard standalone partial indentation. |
+| Chevron | 1.051 ms | 951.1 | Follows standard standalone partial indentation. |
+| Pystache | 1.113 ms | 898.8 | Follows standard standalone partial indentation. |
 
 
-### Benchmark environment
+### Workstation environment
 
 | Field | Value |
 | --- | --- |
@@ -477,6 +477,31 @@ Renderer calls return a `RenderedTemplate`:
 | CPU | AMD Ryzen 7 8845HS w/ Radeon 780M Graphics, 8 cores / 16 threads |
 | Compared versions | Fstache 0.1.1, Chevron 0.14.0, mstache 0.3.0, Pystache 0.6.8 |
 | Command | `RENDERER=<renderer> uv run --python 3.14 --extra dev python tests/perf_test.py`<br>`<renderer>` values: `fstache.no_indentation`, `fstache`, `mstache.no_indentation`, `mstache`, `chevron`, `pystache` |
+
+
+### $4/month VPS throughput
+
+| Library | Mean time | Renders per second | Indentation and validation details |
+| --- | ---: | ---: | --- |
+| Fstache | 1.132 ms | 883.1 | **Deviates**: `ignore_indents=True` skips standard standalone partial reindentation. Baseline warning: apostrophes are escaped as `&#x27;`. |
+| Fstache | 1.437 ms | 696.0 | Follows standard standalone partial indentation. Baseline warning: apostrophes are escaped as `&#x27;`. |
+| mstache | 2.843 ms | 351.7 | **Deviates**: `keep_lines=True` keeps tag-only lines instead of collapsing them, so partial indentation is not reapplied to every partial line. Baseline warning: backticks are escaped as `&#x60;`. |
+| mstache | 4.197 ms | 238.3 | Follows standard standalone partial indentation. Baseline warning: backticks are escaped as `&#x60;`. |
+| Chevron | 4.476 ms | 223.4 | Follows standard standalone partial indentation. Baseline check passed. |
+| Pystache | 5.081 ms | 196.8 | Follows standard standalone partial indentation. Baseline warning: apostrophes are escaped as `&#x27;`. |
+
+
+### $4/month VPS environment
+
+| Field | Value |
+| --- | --- |
+| Python | CPython 3.14.6 |
+| OS | Ubuntu 24.04.4 LTS, Linux 6.8.0-71-generic |
+| CPU | DO-Regular, 1 core / 1 thread |
+| RAM | 458 MiB, no swap |
+| Compared versions | Fstache 0.1.2 from PyPI, Chevron 0.14.0, mstache 0.3.0, Pystache 0.6.8 |
+| Assets | GitHub checkout at commit `489d8d9`; only `demo/` and `tests/perf_test.py` were used from the checkout. |
+| Command | `RENDERER=<renderer> uv run --no-project --python 3.14 --with fstache==0.1.2 --with chevron==0.14.0 --with mstache==0.3.0 --with pystache==0.6.8 python <checkout>/tests/perf_test.py`<br>`<renderer>` values: `fstache.no_indentation`, `fstache`, `mstache.no_indentation`, `mstache`, `chevron`, `pystache` |
 
 
 ### Methodology
