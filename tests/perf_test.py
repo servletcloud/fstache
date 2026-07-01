@@ -114,9 +114,27 @@ class MstacheRenderer:
         return len(res_bytes)
 
 
-class MstacheNoIndentationRenderer(MstacheRenderer):
+class MstacheNoIndentationRenderer:
     def name(self) -> str:
         return "mstache.no_indentation"
+
+    def setup(self, templates_dir: str, layout_name: str, data: dict) -> None:
+        self.data = data
+        self.last_output = b""
+        self._compiled_cache = {}
+
+        # Load layout template as bytes
+        layout_path = os.path.join(templates_dir, f"{layout_name}.mustache")
+        with open(layout_path, "rb") as f:
+            self.layout_template = f.read()
+
+        # Load all partial templates as bytes
+        self.partials = {}
+        for filename in os.listdir(templates_dir):
+            if filename.endswith(".mustache"):
+                name = filename[:-9].encode("utf-8")
+                with open(os.path.join(templates_dir, filename), "rb") as f:
+                    self.partials[name] = f.read()
 
     def render(self) -> int:
         # keep_lines=True is a proxy for weakened indentation behavior, not a
