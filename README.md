@@ -25,6 +25,49 @@ Author: [vkorobkov](https://www.linkedin.com/in/vkorobkov/)
 - Static partials are preloaded and inlined, eliminating render-time boundary overhead.
 
 
+## Why Fstache Exists
+
+Fstache started from a Python web application built with server-side rendering,
+[HTMX](https://htmx.org/), [Tailwind CSS](https://tailwindcss.com/), and
+[Alpine.js](https://alpinejs.dev/).
+
+That stack followed the HTML-over-the-wire style used by tools like
+[HTMX](https://htmx.org/) and [Hotwire/Turbo](https://turbo.hotwired.dev/):
+keep rendering on the server, send HTML pages or fragments to the browser, and
+use JavaScript only for the interactions that genuinely need to happen on the
+client.
+
+For many full-stack applications, this is a lower-cost and simpler default than
+building a separate client-side application. There is less state to duplicate
+between backend and frontend, fewer moving parts to operate, and less
+framework-specific code between the data and the HTML.
+
+It is also friendly to backend-oriented developers. A small team can build
+useful, interactive web interfaces while staying close to the backend model,
+routing, validation, and deployment flow they already understand.
+
+[Mustache](https://mustache.github.io/) fit that approach because it is
+deliberately simple: templates render the data they receive. They do not become
+another layer for application logic, database access, or framework-specific
+behavior.
+
+The problem showed up on a $4/month VPS. Rendering a full page with
+[Chevron](https://github.com/noahmorrison/chevron) could take 5-10 ms. Smaller
+fragments were faster, but full-page rendering was still common enough to
+matter.
+
+Looking for a faster drop-in renderer led to
+[mstache](https://pypi.org/project/mstache/), which was much faster than Chevron
+in that application. That raised the next question: how fast could a pure-Python
+Mustache renderer be while staying simple, dependency-free, and compatible with
+normal Mustache templates?
+
+Fstache exists to answer that question for this style of Python web development:
+simple Mustache templates, no runtime dependencies, streaming-friendly output,
+and enough speed that rendering whole pages or fragments stays practical on
+modest servers.
+
+
 ## Installation
 
 ```bash
