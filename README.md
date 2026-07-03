@@ -148,6 +148,12 @@ use `create_test_renderer("./templates")` to keep missing templates and
 variables strict while still preloading templates once.
 
 
+## Examples
+
+- [Starlette example](examples/starlette/) shows Fstache with `HTMLResponse`
+  and `StreamingResponse` in a standalone `uv` project.
+
+
 ## API At A Glance
 
 Choose one filesystem factory, keep the returned renderer around, and call it
