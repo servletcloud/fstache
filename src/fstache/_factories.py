@@ -182,8 +182,8 @@ def create_renderer(
     root templates and partials are read and compiled at render time.
 
     Template names that are absolute, traverse through `..`, point to
-    directories, or fail the extension mapping are treated as missing and passed
-    to `resolve_missing_template`.
+    directories, resolve outside `templates_path`, or fail the extension mapping
+    are treated as missing and passed to `resolve_missing_template`.
     """
 
     def compile_template(
@@ -297,10 +297,10 @@ def _create_live_template_loader(
     compile_template: _TemplateCompiler,
     resolve_missing_template: MissingTemplateResolver,
 ) -> TemplateLoader:
-    root = Path(templates_path)
+    root = Path(templates_path).resolve()
     extension = _normalize_extension(extension)
 
-    def load_template(name: str) -> CompiledTemplate:
+    def try_load_template(name: str) -> CompiledTemplate | None:
         path = _template_path_for_name(
             root,
             name,
@@ -308,15 +308,24 @@ def _create_live_template_loader(
             remove_extension=remove_extension,
         )
 
-        if path is None or not path.is_file():
-            return resolve_missing_template(name)
+        if path is None:
+            return None
+
+        source_path = _resolve_template_file(root, path)
+        if source_path is None:
+            return None
 
         try:
-            source = path.read_bytes()
-        except FileNotFoundError:
-            return resolve_missing_template(name)
+            source = source_path.read_bytes()
 
-        return compile_template(source, name=name, delimiters=delimiters)
+            return compile_template(source, name=name, delimiters=delimiters)
+        except FileNotFoundError:
+            return None
+
+    def load_template(name: str) -> CompiledTemplate:
+        template = try_load_template(name)
+
+        return template if template is not None else resolve_missing_template(name)
 
     return load_template
 
@@ -347,18 +356,34 @@ def _iter_template_sources(
     extension: str,
     remove_extension: bool,
 ) -> Iterator[tuple[bytes, str]]:
-    root = Path(path)
+    root = Path(path).resolve()
     extension = _normalize_extension(extension)
 
     for path in sorted(root.rglob("*")):
         if not path.is_file() or not path.name.endswith(extension):
             continue
 
+        source_path = _resolve_template_file(root, path)
+        if source_path is None:
+            continue
+
         name = path.relative_to(root).as_posix()
         if remove_extension and extension != "":
             name = name[: -len(extension)]
 
-        yield path.read_bytes(), name
+        yield source_path.read_bytes(), name
+
+
+def _resolve_template_file(root: Path, path: Path) -> Path | None:
+    try:
+        resolved_path = path.resolve()
+    except (OSError, RuntimeError):
+        return None
+
+    if not resolved_path.is_relative_to(root) or not resolved_path.is_file():
+        return None
+
+    return resolved_path
 
 
 def _normalize_extension(extension: str) -> str:

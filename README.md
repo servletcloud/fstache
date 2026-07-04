@@ -225,6 +225,10 @@ Avoid `preload_templates=False` in production. It reads and compiles templates
 during rendering, repeats filesystem work on each request, and delays syntax
 errors until the template is rendered.
 
+Symlinked templates are allowed when their resolved target stays inside the
+template root. If a requested root template or partial resolves outside that
+root, it is treated as missing and uses `resolve_missing_template`.
+
 
 ### Partials
 

@@ -505,6 +505,75 @@ class TestCreateRenderer:
         assert render(name, {}).to_bytes() == b""
         assert names == [name]
 
+    @pytest.mark.parametrize("preload_templates", [False, True])
+    def test_symlink_to_template_inside_root_renders(
+        self,
+        tmp_path: Path,
+        preload_templates: bool,
+    ) -> None:
+        _write_template(tmp_path / "target.mustache", b"Hello {{name}}")
+        (tmp_path / "linked.mustache").symlink_to(tmp_path / "target.mustache")
+
+        render = fstache.create_renderer(
+            tmp_path,
+            preload_templates=preload_templates,
+        )
+
+        assert render("linked.mustache", {"name": "Ada"}).to_bytes() == b"Hello Ada"
+
+    @pytest.mark.parametrize("preload_templates", [False, True])
+    def test_root_template_symlink_outside_root_uses_resolver(
+        self,
+        tmp_path: Path,
+        preload_templates: bool,
+    ) -> None:
+        names: list[str] = []
+        outside_path = tmp_path.parent / f"{tmp_path.name}-outside" / "secret.mustache"
+
+        def resolve_missing_template(name: str) -> fstache.CompiledTemplate:
+            names.append(name)
+
+            return fstache.compile(b"fallback {{name}}")
+
+        _write_template(outside_path, b"secret {{name}}")
+        (tmp_path / "leak.mustache").symlink_to(outside_path)
+
+        render = fstache.create_renderer(
+            tmp_path,
+            preload_templates=preload_templates,
+            resolve_missing_template=resolve_missing_template,
+        )
+
+        assert render("leak.mustache", {"name": "Ada"}).to_bytes() == b"fallback Ada"
+        assert names == ["leak.mustache"]
+
+    @pytest.mark.parametrize("preload_templates", [False, True])
+    def test_partial_symlink_outside_root_uses_resolver(
+        self,
+        tmp_path: Path,
+        preload_templates: bool,
+    ) -> None:
+        names: list[str] = []
+        outside_path = tmp_path.parent / f"{tmp_path.name}-outside" / "secret.mustache"
+
+        def resolve_missing_template(name: str) -> fstache.CompiledTemplate:
+            names.append(name)
+
+            return fstache.compile(b"fallback")
+
+        _write_template(tmp_path / "page.mustache", b"Hello {{>leak.mustache}}")
+        _write_template(outside_path, b"secret")
+        (tmp_path / "leak.mustache").symlink_to(outside_path)
+
+        render = fstache.create_renderer(
+            tmp_path,
+            preload_templates=preload_templates,
+            resolve_missing_template=resolve_missing_template,
+        )
+
+        assert render("page.mustache", {}).to_bytes() == b"Hello fallback"
+        assert names == ["leak.mustache"]
+
     def test_delimiters_compile_root_templates_and_partials(
         self,
         tmp_path: Path,
