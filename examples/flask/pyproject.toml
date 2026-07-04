@@ -1,0 +1,10 @@
+[project]
+name = "fstache-flask-example"
+version = "0.1.0"
+description = "Small Flask example using Fstache templates"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "flask>=3.0.0",
+    "fstache>=0.1.3",
+]

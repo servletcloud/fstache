@@ -150,6 +150,8 @@ variables strict while still preloading templates once.
 
 ## Examples
 
+- [Flask example](examples/flask/) shows Fstache with regular and streamed
+  WSGI `Response` objects in a standalone `uv` project.
 - [Starlette example](examples/starlette/) shows Fstache with `HTMLResponse`
   and `StreamingResponse` in a standalone `uv` project.
 
