@@ -105,6 +105,42 @@ Hello, Ada!
 ```
 
 
+## CLI
+
+Use `fstache render` when you want a small shell-friendly render step:
+
+```bash
+fstache render --data data.json < page.mustache > page.html
+```
+
+The command reads the root template from stdin, reads JSON data from `--data`,
+writes rendered bytes to stdout, and writes diagnostics to stderr. If `--data`
+is omitted, it renders with `{}`.
+
+Partials resolve from the current working directory:
+
+```mustache
+{{> shared/header.mustache}}
+```
+
+Use `--remove-extension` when partial names omit the template extension:
+
+```bash
+fstache render --data data.json --remove-extension < page.mustache > page.html
+```
+
+Set `--extension` for another template file extension. The leading dot is
+optional:
+
+```bash
+fstache render --data data.json --extension .html --remove-extension < page.mustache > page.html
+```
+
+If an interpolation variable or partial template is missing, `fstache render`
+still writes the rendered result to stdout using an empty value for the missing
+tag. It also writes a clear diagnostic to stderr and exits with status `1`.
+
+
 ## Recommended Setup
 
 Keep templates under one root:

@@ -19,6 +19,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.scripts]
+fstache = "fstache._cli:main"
+
 [project.optional-dependencies]
 dev = [
     "ruff>=0.6.0",
