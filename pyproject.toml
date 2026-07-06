@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "fstache"
-version = "0.1.4"
+version = "0.1.5"
 description = "Fast dependency-free, typed Mustache renderer for Python 3.12+"
 readme = "README.md"
 requires-python = ">=3.12"
