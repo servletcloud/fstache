@@ -298,6 +298,27 @@ class TestCreateRenderer:
 
         assert render("page.mustache", {"name": "Ada"}).to_bytes() == b"Hello Ada"
 
+    def test_preloaded_and_live_renderers_resolve_dot_prefixed_partials_equally(
+        self,
+        tmp_path: Path,
+    ) -> None:
+        _write_template(tmp_path / "page.mustache", b"Hello {{>./partial.mustache}}")
+        _write_template(tmp_path / "partial.mustache", b"Partial")
+
+        def create(preload_templates: bool) -> fstache.TemplateRenderer:
+            return fstache.create_renderer(
+                tmp_path,
+                preload_templates=preload_templates,
+                resolve_missing_template=fstache.resolve_missing_template_as_empty,
+            )
+
+        live = create(preload_templates=False)
+        preloaded = create(preload_templates=True)
+        expected = live("page.mustache", {}).to_bytes()
+
+        assert expected == b"Hello Partial"
+        assert preloaded("page.mustache", {}).to_bytes() == expected
+
     def test_preload_templates_false_sees_partial_template_edits(
         self,
         tmp_path: Path,

@@ -283,6 +283,18 @@ def _create_cached_template_loader(
         if template is not None:
             return template
 
+        normalized = _normalize_template_name(
+            name,
+            extension=extension,
+            remove_extension=remove_extension,
+        )
+        if normalized is not None and normalized != name:
+            template = templates.get(normalized)
+            if template is not None:
+                templates[name] = template
+
+                return template
+
         return resolve_missing_template(name)
 
     return load_template
@@ -337,6 +349,27 @@ def _template_path_for_name(
     extension: str,
     remove_extension: bool,
 ) -> Path | None:
+    normalized = _normalize_template_name(
+        name,
+        extension=extension,
+        remove_extension=remove_extension,
+    )
+
+    if normalized is None:
+        return None
+
+    if remove_extension and extension != "":
+        return root / f"{normalized}{extension}"
+
+    return root / normalized
+
+
+def _normalize_template_name(
+    name: str,
+    *,
+    extension: str,
+    remove_extension: bool,
+) -> str | None:
     if remove_extension and extension != "":
         path = Path(f"{name}{extension}")
     else:
@@ -347,7 +380,12 @@ def _template_path_for_name(
     if path.is_absolute() or ".." in path.parts:
         return None
 
-    return root / path
+    name_with_ext = path.as_posix()
+    if remove_extension and extension != "":
+        if name_with_ext.endswith(extension):
+            return name_with_ext[: -len(extension)]
+
+    return name_with_ext
 
 
 def _iter_template_sources(
