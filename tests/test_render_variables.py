@@ -228,6 +228,23 @@ class TestRenderVariables:
             compiled, {"value": memoryview(b"&<>'\"")}
         ).to_bytes() == (b"&amp;&lt;&gt;&#x27;&quot;")
 
+    def test_lambda_returning_bytes_matches_direct_escaped_bytes_value(self) -> None:
+        compiled = fstache.compile(b"{{value}}")
+        direct = render_template(compiled, {"value": b"&<>'\""}).to_bytes()
+        via_lambda = render_template(compiled, {"value": lambda: b"&<>'\""}).to_bytes()
+
+        assert via_lambda == direct == b"&amp;&lt;&gt;&#x27;&quot;"
+
+    def test_lambda_returning_memoryview_matches_direct_escaped_memoryview_value(
+        self,
+    ) -> None:
+        compiled = fstache.compile(b"{{value}}")
+        value = memoryview(b"&<>'\"")
+        direct = render_template(compiled, {"value": value}).to_bytes()
+        via_lambda = render_template(compiled, {"value": lambda: value}).to_bytes()
+
+        assert via_lambda == direct == b"&amp;&lt;&gt;&#x27;&quot;"
+
     @pytest.mark.parametrize(
         "template",
         [
@@ -271,6 +288,50 @@ class TestRenderVariables:
         assert render_template(
             compiled, {"value": memoryview(b"A&B <strong>x</strong>")}
         ).to_bytes() == (b"A&B <strong>x</strong>")
+
+    @pytest.mark.parametrize(
+        "template",
+        [
+            b"{{{value}}}",
+            b"{{& value}}",
+        ],
+    )
+    def test_lambda_returning_bytes_writes_raw_bytes_for_unescaped_variables(
+        self, template: bytes
+    ) -> None:
+        compiled = fstache.compile(template)
+
+        assert render_template(
+            compiled, {"value": lambda: b"A&B <strong>x</strong>"}
+        ).to_bytes() == (b"A&B <strong>x</strong>")
+
+    @pytest.mark.parametrize(
+        "template",
+        [
+            b"{{{value}}}",
+            b"{{& value}}",
+        ],
+    )
+    def test_lambda_returning_memoryview_writes_raw_memoryview_for_unescaped_variables(
+        self, template: bytes
+    ) -> None:
+        compiled = fstache.compile(template)
+
+        assert render_template(
+            compiled, {"value": lambda: memoryview(b"A&B <strong>x</strong>")}
+        ).to_bytes() == (b"A&B <strong>x</strong>")
+
+    def test_lambda_returning_bytes_template_source_renders_literal_bytes(
+        self,
+    ) -> None:
+        compiled = fstache.compile(b"{{value}}")
+
+        assert (
+            render_template(
+                compiled, {"value": lambda: b"{{name}}", "name": "expanded"}
+            ).to_bytes()
+            == b"{{name}}"
+        )
 
     @pytest.mark.parametrize(
         "template",

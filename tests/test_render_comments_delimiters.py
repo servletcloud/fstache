@@ -17,7 +17,6 @@ class TestRenderCommentsDelimiters:
             (b"a{{!}}b", b"ab"),
             (b"a{{!   }}b", b"ab"),
             (b"a{{! user..name }}b", b"ab"),
-            (b"a{{! {{name}} }}b", b"ab"),
             (b"a{{! \xff }}b", b"ab"),
         ],
     )
@@ -37,6 +36,25 @@ class TestRenderCommentsDelimiters:
         compiled = fstache.compile(b"{{^items}}a{{! hidden }}b{{/items}}")
 
         assert render_template(compiled, {"items": []}).to_bytes() == b"ab"
+
+    def test_inline_comment_keeps_following_closing_delimiter_literal(self) -> None:
+        compiled = fstache.compile(b"a{{!x}}}}b")
+
+        assert render_template(compiled, {}).to_bytes() == b"a}}b"
+
+    def test_inline_comment_keeps_whitespace_and_following_delimiter_literal(
+        self,
+    ) -> None:
+        compiled = fstache.compile(b"a{{!x}} }}b")
+
+        assert render_template(compiled, {}).to_bytes() == b"a }}b"
+
+    def test_inline_comment_allows_opening_delimiter_text_before_following_tag(
+        self,
+    ) -> None:
+        compiled = fstache.compile(b"a{{! use {{ for tags }}{{name}}b")
+
+        assert render_template(compiled, {"name": "X"}).to_bytes() == b"aXb"
 
     def test_delimiter_tags_render_empty_bytes_and_switch_interpolation(self) -> None:
         compiled = fstache.compile(b"{{=<% %>=}}(<%name%>)")
@@ -81,6 +99,13 @@ class TestRenderCommentsDelimiters:
         compiled = fstache.compile(b"{{=<% %>=}}a<%! hidden %>b")
 
         assert render_template(compiled, {}).to_bytes() == b"ab"
+
+    def test_custom_delimiter_inline_comment_keeps_following_delimiter_literal(
+        self,
+    ) -> None:
+        compiled = fstache.compile(b"{{=<% %>=}}a<%!x%>%>b")
+
+        assert render_template(compiled, {}).to_bytes() == b"a%>b"
 
     def test_custom_delimiters_trim_standalone_comments(self) -> None:
         compiled = fstache.compile(b"{{=<% %>=}}Begin.\n<%! Comment %>\nEnd.")

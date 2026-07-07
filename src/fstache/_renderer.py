@@ -297,6 +297,9 @@ class _Renderer:
         if callable(value):
             value = value()  # ty:ignore[call-top-callable]
 
+            if value is None:
+                return
+
             if type(value) is _Renderer:
                 self.write_value_chunks(
                     value._chunks,
@@ -305,16 +308,25 @@ class _Renderer:
                 )
                 return
 
-            if value is not None:
-                chunks = self.render_lambda_template(
-                    scope_stack,
-                    str(value),
-                )
+            vtype = type(value)
+
+            if vtype is bytes or vtype is memoryview or isinstance(value, _CHUNK_TYPES):
                 self.write_value_chunks(
-                    chunks,
+                    [value],  # ty:ignore[invalid-argument-type]
                     indentation,
                     escape=escape,
                 )
+                return
+
+            chunks = self.render_lambda_template(
+                scope_stack,
+                str(value),
+            )
+            self.write_value_chunks(
+                chunks,
+                indentation,
+                escape=escape,
+            )
 
             return
 

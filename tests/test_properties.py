@@ -19,6 +19,13 @@ _MAX_SYNTAX_EXCERPT_CHARS: Final[int] = 80
 _CR_BYTE: Final[int] = ord("\r")
 _LF_BYTE: Final[int] = ord("\n")
 _OPEN_BRACE_BYTE: Final[int] = ord("{")
+_CLOSE_BRACE_BYTE: Final[int] = ord("}")
+_PLAIN_TEXT_BYTES: Final = st.lists(
+    st.integers(min_value=0, max_value=255).filter(
+        lambda byte: byte != _OPEN_BRACE_BYTE
+    ),
+    max_size=512,
+).map(bytes)
 _LINE_BYTES: Final = st.lists(
     st.sampled_from(
         tuple(
@@ -29,6 +36,47 @@ _LINE_BYTES: Final = st.lists(
     ),
     max_size=20,
 ).map(bytes)
+_INLINE_COMMENT_BODY_BYTES: Final = st.lists(
+    st.sampled_from(
+        tuple(
+            byte
+            for byte in range(128)
+            if byte not in (_CR_BYTE, _LF_BYTE, _OPEN_BRACE_BYTE, _CLOSE_BRACE_BYTE)
+        )
+    ),
+    max_size=20,
+).map(bytes)
+_INLINE_LITERAL_BYTES: Final = st.lists(
+    st.sampled_from(
+        tuple(
+            byte
+            for byte in range(128)
+            if byte not in (_CR_BYTE, _LF_BYTE, _OPEN_BRACE_BYTE)
+        )
+    ),
+    max_size=20,
+).map(bytes)
+_SPACE_OR_TAB_BYTES: Final = st.lists(
+    st.sampled_from((ord(" "), ord("\t"))),
+    max_size=4,
+).map(bytes)
+_INTERPOLATION_VALUE = st.one_of(
+    st.none(),
+    st.booleans(),
+    st.integers(),
+    st.floats(allow_nan=False, allow_infinity=False),
+    st.text(),
+    st.binary(),
+    st.binary().map(memoryview),
+)
+
+
+@settings(max_examples=500, deadline=None)
+@given(template=_PLAIN_TEXT_BYTES)
+def test_plain_text_without_tags_renders_itself(template: bytes) -> None:
+    compiled = fstache.compile(template, name=_GENERATED_TEMPLATE_NAME)
+
+    assert render_generated_template(compiled).to_bytes() == template
 
 
 @example(b"")
@@ -68,15 +116,7 @@ def test_arbitrary_template_bytes_compile_or_render_coherently(
 
 @settings(max_examples=500, deadline=None)
 @given(
-    value=st.one_of(
-        st.none(),
-        st.booleans(),
-        st.integers(),
-        st.floats(allow_nan=False, allow_infinity=False),
-        st.text(),
-        st.binary(),
-        st.binary().map(memoryview),
-    ),
+    value=_INTERPOLATION_VALUE,
     unescaped=st.booleans(),
 )
 def test_variable_interpolation_matches_value_oracle(
@@ -87,6 +127,27 @@ def test_variable_interpolation_matches_value_oracle(
     compiled = fstache.compile(template, name=_GENERATED_TEMPLATE_NAME)
 
     rendered = render_generated_template(compiled, {"value": value}).to_bytes()
+    raw_value = expected_raw_interpolation_value(value)
+    expected = raw_value if unescaped else fstache.html_escape(raw_value)
+
+    assert rendered == expected
+
+
+@settings(max_examples=500, deadline=None)
+@given(
+    value=_INTERPOLATION_VALUE,
+    unescaped=st.booleans(),
+)
+def test_dotted_variable_interpolation_matches_nested_value_oracle(
+    value: object,
+    unescaped: bool,
+) -> None:
+    template = b"{{{user.value}}}" if unescaped else b"{{user.value}}"
+    compiled = fstache.compile(template, name=_GENERATED_TEMPLATE_NAME)
+
+    rendered = render_generated_template(
+        compiled, {"user": {"value": value}}
+    ).to_bytes()
     raw_value = expected_raw_interpolation_value(value)
     expected = raw_value if unescaped else fstache.html_escape(raw_value)
 
@@ -116,6 +177,80 @@ def test_variable_lambda_scalar_results_match_value_oracle(
     expected = raw_value if unescaped else fstache.html_escape(raw_value)
 
     assert rendered == expected
+
+
+@example(value=b"", unescaped=True)
+@settings(max_examples=500, deadline=None)
+@given(
+    value=st.one_of(st.binary(), st.binary().map(memoryview)),
+    unescaped=st.booleans(),
+)
+def test_variable_lambda_bytes_like_results_match_direct_value(
+    value: bytes | memoryview,
+    unescaped: bool,
+) -> None:
+    template = b"{{{value}}}" if unescaped else b"{{value}}"
+    compiled = fstache.compile(template, name=_GENERATED_TEMPLATE_NAME)
+
+    direct = render_generated_template(compiled, {"value": value}).to_bytes()
+    via_lambda = render_generated_template(
+        compiled, {"value": lambda value=value: value}
+    ).to_bytes()
+
+    assert via_lambda == direct
+
+
+@example(open_indent=b"", line_break=b"\n", close_indent=b" ")
+@settings(max_examples=500, deadline=None)
+@given(
+    open_indent=_SPACE_OR_TAB_BYTES,
+    line_break=st.sampled_from((b"\n", b"\r\n")),
+    close_indent=_SPACE_OR_TAB_BYTES,
+)
+def test_empty_standalone_section_lambda_receives_raw_body_indent(
+    open_indent: bytes,
+    line_break: bytes,
+    close_indent: bytes,
+) -> None:
+    bodies: list[str] = []
+    template = open_indent + b"{{#wrap}}" + line_break + close_indent + b"{{/wrap}}"
+    compiled = fstache.compile(template, name=_GENERATED_TEMPLATE_NAME)
+
+    def echo_body(body: str) -> str:
+        bodies.append(body)
+
+        return body
+
+    rendered_lambda = render_generated_template(
+        compiled, {"wrap": echo_body}
+    ).to_bytes()
+    rendered_truthy = render_generated_template(compiled, {"wrap": True}).to_bytes()
+
+    assert bodies == [close_indent.decode()]
+    assert rendered_lambda == close_indent
+    assert rendered_truthy == b""
+
+
+@example(prefix=b"a", comment=b"x", padding=b"", suffix=b"b")
+@settings(max_examples=500, deadline=None)
+@given(
+    prefix=_INLINE_LITERAL_BYTES.map(lambda value: b"a" + value),
+    comment=_INLINE_COMMENT_BODY_BYTES,
+    padding=_SPACE_OR_TAB_BYTES,
+    suffix=_INLINE_LITERAL_BYTES,
+)
+def test_inline_comment_keeps_following_closing_delimiter_literal(
+    prefix: bytes,
+    comment: bytes,
+    padding: bytes,
+    suffix: bytes,
+) -> None:
+    template = prefix + b"{{!" + comment + b"}}" + padding + b"}}" + suffix
+    compiled = fstache.compile(template, name=_GENERATED_TEMPLATE_NAME)
+
+    rendered = render_generated_template(compiled).to_bytes()
+
+    assert rendered == prefix + padding + b"}}" + suffix
 
 
 @settings(max_examples=500, deadline=None)

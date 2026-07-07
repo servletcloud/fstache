@@ -43,7 +43,6 @@ _CR: Final[bytes] = b"\r"
 _CRLF: Final[bytes] = b"\r\n"
 _LF_BYTE: Final[int] = _LF[0]
 _CR_BYTE: Final[int] = _CR[0]
-_COMMENT_CLOSE_PADDING_BYTES: Final[bytes] = b" \t\r\n"
 _DELIMITER_WHITESPACE_BYTES: Final[bytes] = b" \t\r\n\v\f"
 _NAME_WHITESPACE_BYTES: Final[bytes] = b" \t\r\n\v\f"
 _CURRENT_CONTEXT_PATH: Final[tuple[str, ...]] = (".",)
@@ -376,11 +375,7 @@ def compile(
 
         tag_content_start = tag_start + len(delimiters.start)
         tag_sigil = template[tag_content_start : tag_content_start + _TAG_SIGIL_WIDTH]
-        is_comment_tag = tag_sigil == _COMMENT_SIGIL
-        if is_comment_tag:
-            tag_end = _find_comment_tag_end(template, tag_content_start, delimiters.end)
-        else:
-            tag_end = template.find(delimiters.end, tag_content_start)
+        tag_end = template.find(delimiters.end, tag_content_start)
 
         if tag_end < 0:
             msg = "unclosed tag"
@@ -656,26 +651,6 @@ def _parse_set_delimiters(tag_content: bytes) -> Delimiters:
     start_delimiter, end_delimiter = delimiters
 
     return Delimiters(start=start_delimiter, end=end_delimiter)
-
-
-def _find_comment_tag_end(
-    template: bytes, tag_content_start: int, tag_end_delimiter: bytes
-) -> int:
-    tag_end = template.find(tag_end_delimiter, tag_content_start)
-    if tag_end < 0:
-        return tag_end
-
-    next_position = tag_end + len(tag_end_delimiter)
-    while (
-        next_position < len(template)
-        and template[next_position] in _COMMENT_CLOSE_PADDING_BYTES
-    ):
-        next_position += 1
-
-    if template.startswith(tag_end_delimiter, next_position):
-        return next_position
-
-    return tag_end
 
 
 def _parse_standalone_tag(
