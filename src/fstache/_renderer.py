@@ -305,7 +305,7 @@ class _Renderer:
                 )
                 return
 
-            if value:
+            if value is not None:
                 chunks = self.render_lambda_template(
                     scope_stack,
                     str(value),

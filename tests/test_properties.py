@@ -18,9 +18,14 @@ _KNOWN_SYNTAX_ERROR_KINDS: Final[frozenset[str]] = frozenset(
 _MAX_SYNTAX_EXCERPT_CHARS: Final[int] = 80
 _CR_BYTE: Final[int] = ord("\r")
 _LF_BYTE: Final[int] = ord("\n")
+_OPEN_BRACE_BYTE: Final[int] = ord("{")
 _LINE_BYTES: Final = st.lists(
     st.sampled_from(
-        tuple(byte for byte in range(128) if byte not in (_CR_BYTE, _LF_BYTE))
+        tuple(
+            byte
+            for byte in range(128)
+            if byte not in (_CR_BYTE, _LF_BYTE, _OPEN_BRACE_BYTE)
+        )
     ),
     max_size=20,
 ).map(bytes)
@@ -82,6 +87,31 @@ def test_variable_interpolation_matches_value_oracle(
     compiled = fstache.compile(template, name=_GENERATED_TEMPLATE_NAME)
 
     rendered = render_generated_template(compiled, {"value": value}).to_bytes()
+    raw_value = expected_raw_interpolation_value(value)
+    expected = raw_value if unescaped else fstache.html_escape(raw_value)
+
+    assert rendered == expected
+
+
+@settings(max_examples=500, deadline=None)
+@given(
+    value=st.one_of(
+        st.booleans(),
+        st.integers(min_value=-1_000_000, max_value=1_000_000),
+        st.floats(allow_nan=False, allow_infinity=False, width=32),
+    ),
+    unescaped=st.booleans(),
+)
+def test_variable_lambda_scalar_results_match_value_oracle(
+    value: object,
+    unescaped: bool,
+) -> None:
+    template = b"{{{value}}}" if unescaped else b"{{value}}"
+    compiled = fstache.compile(template, name=_GENERATED_TEMPLATE_NAME)
+
+    rendered = render_generated_template(
+        compiled, {"value": lambda value=value: value}
+    ).to_bytes()
     raw_value = expected_raw_interpolation_value(value)
     expected = raw_value if unescaped else fstache.html_escape(raw_value)
 

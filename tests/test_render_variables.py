@@ -499,10 +499,24 @@ class TestRenderVariables:
 
         assert render_template(compiled, {"value": lambda: None}).to_bytes() == b""
 
-    def test_renders_lambda_returning_scalar_with_str(self) -> None:
-        compiled = fstache.compile(b"{{value}}")
+    @pytest.mark.parametrize(
+        ("value", "expected"),
+        [
+            (False, b"False"),
+            (0, b"0"),
+            (0.0, b"0.0"),
+            (42, b"42"),
+        ],
+    )
+    def test_renders_lambda_returning_scalar_with_str(
+        self, value: object, expected: bytes
+    ) -> None:
+        compiled = fstache.compile(b"{{value}}|{{{value}}}")
 
-        assert render_template(compiled, {"value": lambda: 42}).to_bytes() == b"42"
+        assert (
+            render_template(compiled, {"value": lambda value=value: value}).to_bytes()
+            == expected + b"|" + expected
+        )
 
     def test_does_not_render_ordinary_string_as_template(self) -> None:
         compiled = fstache.compile(b"{{today}}")
