@@ -26,6 +26,7 @@ fstache = "fstache._cli:main"
 dev = [
     "ruff>=0.6.0",
     "chevron==0.14.0",
+    "hypothesis",
     "mstache==0.3.0",
     "pystache==0.6.8",
     "pytest",
