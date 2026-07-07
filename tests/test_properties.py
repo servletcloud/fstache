@@ -56,10 +56,22 @@ _INLINE_LITERAL_BYTES: Final = st.lists(
     ),
     max_size=20,
 ).map(bytes)
+_PARTIAL_LITERAL_BYTES: Final = st.lists(
+    st.sampled_from(tuple(byte for byte in range(128) if byte != _OPEN_BRACE_BYTE)),
+    max_size=20,
+).map(bytes)
 _SPACE_OR_TAB_BYTES: Final = st.lists(
     st.sampled_from((ord(" "), ord("\t"))),
     max_size=4,
 ).map(bytes)
+_PARTIAL_TEMPLATE_FRAGMENT = st.one_of(
+    _PARTIAL_LITERAL_BYTES,
+    st.sampled_from((b"{{value}}", b"{{{value}}}", b"{{other}}")),
+)
+_PARTIAL_TEMPLATE_SOURCE = st.lists(
+    _PARTIAL_TEMPLATE_FRAGMENT,
+    max_size=8,
+).map(b"".join)
 _INTERPOLATION_VALUE = st.one_of(
     st.none(),
     st.booleans(),
@@ -308,6 +320,71 @@ def test_standalone_partial_indents_each_partial_line(
     assert rendered == expected
 
 
+@settings(max_examples=500, deadline=None)
+@given(
+    main=st.lists(
+        st.one_of(
+            _PARTIAL_TEMPLATE_FRAGMENT,
+            st.sampled_from((b"{{>row}}", b"{{>footer}}")),
+        ),
+        max_size=8,
+    ).map(b"".join),
+    row=st.lists(
+        st.one_of(_PARTIAL_TEMPLATE_FRAGMENT, st.just(b"{{>footer}}")),
+        max_size=8,
+    ).map(b"".join),
+    footer=_PARTIAL_TEMPLATE_SOURCE,
+    value=_INTERPOLATION_VALUE,
+    other=_INTERPOLATION_VALUE,
+)
+def test_inline_partials_with_ignored_indents_matches_loader_render(
+    main: bytes,
+    row: bytes,
+    footer: bytes,
+    value: object,
+    other: object,
+) -> None:
+    templates = {
+        "main": fstache.compile(main, ignore_indents=True),
+        "row": fstache.compile(row, ignore_indents=True),
+        "footer": fstache.compile(footer, ignore_indents=True),
+    }
+    inlined = fstache.inline_partials(templates)
+    data = {"value": value, "other": other}
+
+    assert render_template_map(inlined, "main", data) == render_template_map(
+        templates, "main", data
+    )
+
+
+@settings(max_examples=500, deadline=None)
+@given(
+    partial_name=st.sampled_from(("alpha", "beta")),
+    alpha=_PARTIAL_TEMPLATE_SOURCE,
+    beta=_PARTIAL_TEMPLATE_SOURCE,
+    value=_INTERPOLATION_VALUE,
+    other=_INTERPOLATION_VALUE,
+)
+def test_dynamic_partial_matches_static_partial_for_resolved_name(
+    partial_name: str,
+    alpha: bytes,
+    beta: bytes,
+    value: object,
+    other: object,
+) -> None:
+    templates = {
+        "dynamic": fstache.compile(b"<{{>*partial_name}}>"),
+        "static": fstache.compile(f"<{{{{>{partial_name}}}}}>".encode()),
+        "alpha": fstache.compile(alpha),
+        "beta": fstache.compile(beta),
+    }
+    data = {"partial_name": partial_name, "value": value, "other": other}
+
+    assert render_template_map(templates, "dynamic", data) == render_template_map(
+        templates, "static", data
+    )
+
+
 def assert_syntax_error_is_coherent(
     exc: fstache.TemplateSyntaxError,
     template: bytes,
@@ -392,6 +469,17 @@ def split_literal_line_chunks(value: bytes) -> list[bytes]:
         chunks.append(value[position:])
 
     return chunks
+
+
+def render_template_map(
+    templates: Mapping[str, fstache.CompiledTemplate],
+    name: str,
+    data: object,
+) -> bytes:
+    def load_template(name: str) -> fstache.CompiledTemplate:
+        return templates.get(name, fstache.EMPTY_TEMPLATE)
+
+    return fstache.render(name, data, load_template).to_bytes()
 
 
 def render_generated_template(
