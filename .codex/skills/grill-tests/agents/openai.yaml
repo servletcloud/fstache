@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grill Tests"
+  short_description: "Challenge and improve low-value test coverage."
+  default_prompt: "Use $grill-tests to critically improve the tests for this path or package."
