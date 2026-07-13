@@ -391,7 +391,7 @@ def assert_syntax_error_is_coherent(
 ) -> None:
     assert exc.reason
     assert exc.template_name == _GENERATED_TEMPLATE_NAME
-    assert exc.kind is None or exc.kind in _KNOWN_SYNTAX_ERROR_KINDS
+    assert exc.kind in _KNOWN_SYNTAX_ERROR_KINDS
 
     if exc.offset is not None:
         assert 0 <= exc.offset <= len(template)
@@ -438,37 +438,16 @@ def expected_standalone_partial_render(
     if not partial:
         return b"Begin.\nEnd."
 
-    chunks = split_literal_line_chunks(partial)
-    expected_partial = b"".join(
-        chunk if index == 0 else indent + chunk for index, chunk in enumerate(chunks)
-    )
+    has_final_newline = partial.endswith(b"\n")
+    lines = partial.split(b"\n")
+    if has_final_newline:
+        lines.pop()
+
+    expected_partial = (b"\n" + indent).join(lines)
+    if has_final_newline:
+        expected_partial += b"\n"
 
     return b"Begin.\n" + indent + expected_partial + b"End."
-
-
-def split_literal_line_chunks(value: bytes) -> list[bytes]:
-    chunks: list[bytes] = []
-    position = 0
-    index = 0
-    value_len = len(value)
-    while index < value_len:
-        byte = value[index]
-        if byte == _CR_BYTE and index + 1 < value_len and value[index + 1] == _LF_BYTE:
-            line_break_end = index + 2
-        elif byte == _CR_BYTE or byte == _LF_BYTE:
-            line_break_end = index + 1
-        else:
-            index += 1
-            continue
-
-        chunks.append(value[position:line_break_end])
-        position = line_break_end
-        index = line_break_end
-
-    if position < value_len:
-        chunks.append(value[position:])
-
-    return chunks
 
 
 def render_template_map(

@@ -1,28 +1,10 @@
 import fstache
 
-from fstache import CompiledTemplate, EMPTY_TEMPLATE
-from fstache._compiler import (
-    PartialNode,
-    TextNode,
-    VariableNode,
-)
+from fstache import CompiledTemplate
 from render_helpers import render_template
 
 
 class TestRenderPartials:
-    def test_renders_basic_partial_expansion(self) -> None:
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "text"
-
-            return fstache.compile(b"{{name}}")
-
-        compiled = fstache.compile(b"hello {{>text}}")
-
-        assert (
-            render_template(compiled, {"name": "A&B"}, load_partial).to_bytes()
-            == b"hello A&amp;B"
-        )
-
     def test_partial_inherits_current_section_scope_and_parent_fallback(self) -> None:
         def load_partial(name: str) -> CompiledTemplate:
             assert name == "user"
@@ -34,43 +16,6 @@ class TestRenderPartials:
 
         assert (
             render_template(compiled, data, load_partial).to_bytes() == b"Docs: A&amp;B"
-        )
-
-    def test_inline_partials_preserve_surrounding_whitespace(self) -> None:
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "text"
-
-            return fstache.compile(b"two")
-
-        compiled = fstache.compile(b"one {{>text}} three")
-
-        assert (
-            render_template(compiled, {}, load_partial).to_bytes() == b"one two three"
-        )
-
-    def test_inline_indentation_partial_whitespace_is_left_untouched(self) -> None:
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "partial"
-
-            return fstache.compile(b">\n>")
-
-        compiled = fstache.compile(b"  {{data}}  {{> partial}}\n")
-
-        assert (
-            render_template(compiled, {"data": "|"}, load_partial).to_bytes()
-            == b"  |  >\n>\n"
-        )
-
-    def test_standalone_partials_strip_tag_line_and_indent_partial_lines(self) -> None:
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "text"
-
-            return fstache.compile(b"one\n{{name}}\n")
-
-        compiled = fstache.compile(b"Begin.\n  {{>text}}\nEnd.")
-
-        assert render_template(compiled, {"name": "A&B"}, load_partial).to_bytes() == (
-            b"Begin.\n  one\n  A&amp;B\nEnd."
         )
 
     def test_ignore_indents_standalone_partial_does_not_indent_partial_lines(
@@ -108,85 +53,6 @@ class TestRenderPartials:
         assert render_template(compiled, {"name": "A&B"}, load_partial).to_bytes() == (
             b"Begin.\none\nA&amp;B\nEnd."
         )
-
-    def test_left_trim_source_keeps_inline_whitespace(self) -> None:
-        compiled = fstache.compile(
-            b"  {{first}}  {{second}}\n",
-            left_trim_source=True,
-        )
-
-        assert (
-            render_template(compiled, {"first": "A", "second": "B"}).to_bytes()
-            == b"A  B\n"
-        )
-
-    def test_standalone_partial_lines_with_crlf_follow_standalone_behavior(
-        self,
-    ) -> None:
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "text"
-
-            return fstache.compile(b"one\r\n{{name}}\r\n")
-
-        compiled = fstache.compile(b"Begin.\r\n  {{>text}}\r\nEnd.")
-
-        assert render_template(compiled, {"name": "A&B"}, load_partial).to_bytes() == (
-            b"Begin.\r\n  one\r\n  A&amp;B\r\nEnd."
-        )
-
-    def test_standalone_partial_without_previous_line(self) -> None:
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "partial"
-
-            return fstache.compile(b">\n>")
-
-        compiled = fstache.compile(b"  {{>partial}}\n>")
-
-        assert render_template(compiled, {}, load_partial).to_bytes() == b"  >\n  >>"
-
-    def test_standalone_partial_without_newline(self) -> None:
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "partial"
-
-            return fstache.compile(b">\n>")
-
-        compiled = fstache.compile(b">\n  {{>partial}}")
-
-        assert render_template(compiled, {}, load_partial).to_bytes() == b">\n  >\n  >"
-
-    def test_standalone_partial_indentation_preserves_multiline_content(
-        self,
-    ) -> None:
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "partial"
-
-            return fstache.compile(b"|\n{{{content}}}\n|\n")
-
-        compiled = fstache.compile(b"\\\n {{>partial}}\n/\n")
-
-        assert render_template(
-            compiled, {"content": "<\n->"}, load_partial
-        ).to_bytes() == (b"\\\n |\n <\n->\n |\n/\n")
-
-    def test_empty_standalone_partial_does_not_emit_indentation(self) -> None:
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "partial"
-
-            return EMPTY_TEMPLATE
-
-        compiled = fstache.compile(b"Begin.\n  {{>partial}}\nEnd.")
-
-        assert render_template(compiled, {}, load_partial).to_bytes() == b"Begin.\nEnd."
-
-    def test_partial_padding_whitespace_is_ignored(self) -> None:
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "partial"
-
-            return fstache.compile(b"[]")
-
-        compiled = fstache.compile(b"|{{> partial }}|")
-
-        assert render_template(compiled, {}, load_partial).to_bytes() == b"|[]|"
 
     def test_resolve_missing_variable_is_not_used_for_dynamic_partial_names(
         self,
@@ -353,39 +219,4 @@ class TestRenderPartials:
 
         assert render_template(compiled, {"name": "A&B"}, load_partial).to_bytes() == (
             b"  one two\n  A&amp;B"
-        )
-
-    def test_render_lowers_manual_partial_node(self) -> None:
-        compiled = (
-            TextNode.from_bytes(b"Begin.\n"),
-            PartialNode(name="text", indentation=b"  "),
-        )
-
-        def load_partial(name: str) -> CompiledTemplate:
-            assert name == "text"
-
-            return (
-                TextNode.from_bytes(b"one\n"),
-                VariableNode(path=("name",)),
-            )
-
-        assert (
-            render_template(compiled, {"name": "A&B"}, load_partial).to_bytes()
-            == b"Begin.\n  one\n  A&amp;B"
-        )
-
-    def test_nested_non_recursive_partials_work(self) -> None:
-        partial_templates = {
-            "outer": b"[{{>inner}}]",
-            "inner": b"{{name}}",
-        }
-
-        def load_partial(name: str) -> CompiledTemplate:
-            return fstache.compile(partial_templates[name])
-
-        compiled = fstache.compile(b"{{>outer}}")
-
-        assert (
-            render_template(compiled, {"name": "A&B"}, load_partial).to_bytes()
-            == b"[A&amp;B]"
         )

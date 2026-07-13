@@ -1,39 +1,19 @@
-from collections.abc import Mapping
-
 import fstache
 
-from fstache import CompiledTemplate, EMPTY_TEMPLATE
+from fstache import CompiledTemplate
 from render_helpers import render_template
-
-
-def _render_with_partials(
-    template: bytes,
-    data: object,
-    partials: Mapping[str, bytes],
-    *,
-    missing_partials_are_empty: bool = False,
-) -> bytes:
-    def load_partial(name: str) -> CompiledTemplate:
-        partial = partials.get(name)
-        if partial is None:
-            if missing_partials_are_empty:
-                return EMPTY_TEMPLATE
-
-            raise KeyError(name)
-
-        return fstache.compile(partial)
-
-    return render_template(fstache.compile(template), data, load_partial).to_bytes()
 
 
 class TestPartialSpecRegressions:
     def test_caller_delimiters_do_not_affect_partial_parsing(self) -> None:
+        compiled = fstache.compile(b"{{=<% %>=}}<%>partial%>")
+
         assert (
-            _render_with_partials(
-                b"{{=<% %>=}}<%>partial%>",
+            render_template(
+                compiled,
                 {"text": "content"},
-                {"partial": b"*{{text}}*"},
-            )
+                partials={"partial": b"*{{text}}*"},
+            ).to_bytes()
             == b"*content*"
         )
 

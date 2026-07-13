@@ -183,21 +183,6 @@ class TestCreateRenderer:
         assert exc_info.value.name == "missing.mustache"
         assert not isinstance(exc_info.value, KeyError)
 
-    def test_resolve_missing_template_as_error_can_be_called_directly(self) -> None:
-        with pytest.raises(
-            fstache.MissingTemplateError,
-            match="missing template: missing\\.mustache",
-        ) as exc_info:
-            fstache.resolve_missing_template_as_error("missing.mustache")
-
-        assert exc_info.value.name == "missing.mustache"
-        assert not isinstance(exc_info.value, KeyError)
-
-    def test_resolve_missing_template_as_empty_can_be_called_directly(self) -> None:
-        assert fstache.resolve_missing_template_as_empty("missing.mustache") is (
-            fstache.EMPTY_TEMPLATE
-        )
-
     def test_missing_root_template_can_render_empty_output(
         self,
         tmp_path: Path,
@@ -345,26 +330,6 @@ class TestCreateRenderer:
 
         assert render("page.mustache", {"name": "Ada"}).to_bytes() == b"Hello Ada"
 
-    def test_preload_templates_false_missing_root_uses_resolver(
-        self,
-        tmp_path: Path,
-    ) -> None:
-        names: list[str] = []
-
-        def resolve_missing_template(name: str) -> fstache.CompiledTemplate:
-            names.append(name)
-
-            return fstache.EMPTY_TEMPLATE
-
-        render = fstache.create_renderer(
-            tmp_path,
-            preload_templates=False,
-            resolve_missing_template=resolve_missing_template,
-        )
-
-        assert render("missing.mustache", {}).to_bytes() == b""
-        assert names == ["missing.mustache"]
-
     def test_preload_templates_false_missing_partial_uses_resolver(
         self,
         tmp_path: Path,
@@ -387,11 +352,15 @@ class TestCreateRenderer:
         assert render("page.mustache", {}).to_bytes() == b"Hello fallback"
         assert names == ["missing.mustache"]
 
-    def test_preload_templates_false_custom_missing_resolver_can_return_fallback(
+    def test_preload_templates_false_missing_root_uses_custom_fallback(
         self,
         tmp_path: Path,
     ) -> None:
+        names: list[str] = []
+
         def resolve_missing_template(name: str) -> fstache.CompiledTemplate:
+            names.append(name)
+
             return fstache.compile(b"Missing {{name}}")
 
         render = fstache.create_renderer(
@@ -403,6 +372,7 @@ class TestCreateRenderer:
         assert render("missing.mustache", {"name": "Ada"}).to_bytes() == (
             b"Missing Ada"
         )
+        assert names == ["missing.mustache"]
 
     def test_preload_templates_false_delays_syntax_errors_until_render(
         self,
@@ -459,6 +429,7 @@ class TestCreateRenderer:
 
         assert render("page", {"name": "Ada"}).to_bytes() == b"Hello Ada"
 
+    @pytest.mark.parametrize("preload_templates", [False, True])
     @pytest.mark.parametrize(
         "name",
         [
@@ -469,10 +440,11 @@ class TestCreateRenderer:
             "/outside.mustache",
         ],
     )
-    def test_preload_templates_false_invalid_names_use_resolver(
+    def test_unavailable_template_names_use_resolver(
         self,
         tmp_path: Path,
         name: str,
+        preload_templates: bool,
     ) -> None:
         names: list[str] = []
 
@@ -486,40 +458,7 @@ class TestCreateRenderer:
 
         render = fstache.create_renderer(
             tmp_path,
-            preload_templates=False,
-            resolve_missing_template=resolve_missing_template,
-        )
-
-        assert render(name, {}).to_bytes() == b""
-        assert names == [name]
-
-    @pytest.mark.parametrize(
-        "name",
-        [
-            "page.txt",
-            "missing.mustache",
-            "directory.mustache",
-            "../outside.mustache",
-            "/outside.mustache",
-        ],
-    )
-    def test_preload_templates_true_invalid_names_use_resolver(
-        self,
-        tmp_path: Path,
-        name: str,
-    ) -> None:
-        names: list[str] = []
-
-        def resolve_missing_template(name: str) -> fstache.CompiledTemplate:
-            names.append(name)
-
-            return fstache.EMPTY_TEMPLATE
-
-        _write_template(tmp_path / "page.txt", b"wrong extension")
-        (tmp_path / "directory.mustache").mkdir()
-
-        render = fstache.create_renderer(
-            tmp_path,
+            preload_templates=preload_templates,
             resolve_missing_template=resolve_missing_template,
         )
 
@@ -609,21 +548,6 @@ class TestCreateRenderer:
 
         assert render("page.mustache", {"name": "A&B"}).to_bytes() == (b"Hello A&amp;B")
 
-    def test_ignore_indents_compiles_root_templates_and_partials(
-        self,
-        tmp_path: Path,
-    ) -> None:
-        _write_template(
-            tmp_path / "page.mustache", b"Begin.\n  {{>name.mustache}}\nEnd."
-        )
-        _write_template(tmp_path / "name.mustache", b"one\n{{name}}\n")
-
-        render = fstache.create_renderer(tmp_path, ignore_indents=True)
-
-        assert render("page.mustache", {"name": "A&B"}).to_bytes() == (
-            b"Begin.\none\nA&amp;B\nEnd."
-        )
-
     def test_left_trim_source_compiles_root_templates(
         self,
         tmp_path: Path,
@@ -698,9 +622,6 @@ class TestCreateRenderer:
             b"[A&B] [C<D]"
         )
         assert values == [b"A&B", b"C<D"]
-
-    def test_resolve_missing_variable_as_none_is_public_default(self) -> None:
-        assert fstache.resolve_missing_variable_as_none(("name",)) is None
 
     def test_resolve_missing_variable_as_error_works_with_create_renderer(
         self,

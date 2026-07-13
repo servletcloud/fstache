@@ -144,32 +144,18 @@ def test_render_extension_matches_with_optional_dot(
     assert stderr == ""
 
 
-def test_render_missing_variable_records_diagnostic(monkeypatch, capfd) -> None:
-    exit_code, stdout, stderr = _run_render(
-        [],
-        b"Hello {{user.name}}",
-        monkeypatch,
-        capfd,
-    )
-
-    assert exit_code == 1
-    assert stdout == "Hello "
-    assert stderr == ("fstache render: missing template variable: user.name\n")
-    assert "Traceback" not in stderr
-
-
 def test_render_repeated_missing_variable_records_one_diagnostic(
     monkeypatch, capfd
 ) -> None:
     exit_code, stdout, stderr = _run_render(
         [],
-        b"{{user.name}} {{user.name}}",
+        b"Hello {{user.name}} / {{user.name}}",
         monkeypatch,
         capfd,
     )
 
     assert exit_code == 1
-    assert stdout == " "
+    assert stdout == "Hello  / "
     assert stderr == ("fstache render: missing template variable: user.name\n")
 
 
@@ -202,39 +188,32 @@ def test_render_missing_dynamic_partial_name_is_quiet_empty_output(
     assert stderr == ""
 
 
-def test_render_missing_partial_records_diagnostic(monkeypatch, capfd) -> None:
-    exit_code, stdout, stderr = _run_render(
-        [],
-        b"Hello {{> shared/header.mustache}}",
-        monkeypatch,
-        capfd,
-    )
-
-    assert exit_code == 1
-    assert stdout == "Hello "
-    assert stderr == ("fstache render: missing template: shared/header.mustache\n")
-    assert "Traceback" not in stderr
-
-
 def test_render_repeated_missing_partial_records_one_diagnostic(
-    monkeypatch, capfd
+    tmp_path: Path,
+    monkeypatch,
+    capfd,
 ) -> None:
+    monkeypatch.chdir(tmp_path)
+
     exit_code, stdout, stderr = _run_render(
         [],
-        b"{{> shared/header.mustache}}{{> shared/header.mustache}}",
+        (b"Hello {{> shared/header.mustache}} / {{> shared/header.mustache}}"),
         monkeypatch,
         capfd,
     )
 
     assert exit_code == 1
-    assert stdout == ""
+    assert stdout == "Hello  / "
     assert stderr == ("fstache render: missing template: shared/header.mustache\n")
 
 
 def test_render_missing_stdin_named_partial_records_diagnostic(
+    tmp_path: Path,
     monkeypatch,
     capfd,
 ) -> None:
+    monkeypatch.chdir(tmp_path)
+
     exit_code, stdout, stderr = _run_render(
         [],
         b"Hello {{> <stdin>}}",
@@ -253,6 +232,7 @@ def test_render_dynamic_stdin_named_partial_records_diagnostic(
     monkeypatch,
     capfd,
 ) -> None:
+    monkeypatch.chdir(tmp_path)
     data_path = tmp_path / "data.json"
     data_path.write_text('{"partial": "<stdin>"}', encoding="utf-8")
 
@@ -287,6 +267,8 @@ def test_render_invalid_json_exits_without_traceback(
     assert exit_code == 1
     assert stdout == ""
     assert "fstache render: invalid JSON in" in stderr
+    assert str(data_path) in stderr
+    assert "line 1, column 2" in stderr
     assert "Traceback" not in stderr
 
 
@@ -308,6 +290,7 @@ def test_render_undecodable_data_file_exits_without_traceback(
     assert exit_code == 1
     assert stdout == ""
     assert "fstache render: cannot read" in stderr
+    assert str(data_path) in stderr
     assert "invalid UTF-8" in stderr
     assert "Traceback" not in stderr
 
@@ -329,6 +312,7 @@ def test_render_unreadable_data_file_exits_without_traceback(
     assert exit_code == 1
     assert stdout == ""
     assert "fstache render: cannot read" in stderr
+    assert str(data_path) in stderr
     assert "Traceback" not in stderr
 
 
@@ -377,6 +361,7 @@ def test_render_syntax_error_mentions_stdin(monkeypatch, capfd) -> None:
 
     assert exit_code == 1
     assert stdout == ""
+    assert "unclosed section: user" in stderr
     assert "<stdin>" in stderr
     assert "Traceback" not in stderr
 

@@ -82,14 +82,17 @@ def test_upstream_mustache_spec_case(file_name: str, case: JsonObject) -> None:
     assert actual == case["expected"]
 
 
-def test_unsupported_exclusions_reference_vendored_fixtures() -> None:
+def test_exclusions_are_documented_and_reference_vendored_fixtures() -> None:
     file_names = {path.name for path in _SPEC_DIR.glob(f"*{_JSON_SUFFIX}")}
     missing_files = set(_EXCLUDED_SPEC_FILES) - file_names
 
     assert missing_files == set()
+    assert all(reason.strip() for reason in _EXCLUDED_SPEC_FILES.values())
 
-    for file_name, case_name in _EXCLUDED_SPEC_CASES:
+    for (file_name, case_name), reason in _EXCLUDED_SPEC_CASES.items():
+        assert reason.strip()
         assert file_name in file_names
+        assert file_name not in _EXCLUDED_SPEC_FILES
 
         case_names = {case["name"] for case in _load_spec_file(file_name)["tests"]}
 

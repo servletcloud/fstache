@@ -50,11 +50,19 @@ class TestInlinePartials:
             "inner": (VariableNode(path=("name",)),),
         }
 
-        assert fstache.inline_partials(templates)["main"] == (
-            TextNode(chunks=(b"[",), value=b"["),
-            VariableNode(path=("name",)),
-            TextNode(chunks=(b"]",), value=b"]"),
-        )
+        assert fstache.inline_partials(templates) == {
+            "main": (
+                TextNode(chunks=(b"[",), value=b"["),
+                VariableNode(path=("name",)),
+                TextNode(chunks=(b"]",), value=b"]"),
+            ),
+            "outer": (
+                TextNode(chunks=(b"[",), value=b"["),
+                VariableNode(path=("name",)),
+                TextNode(chunks=(b"]",), value=b"]"),
+            ),
+            "inner": (VariableNode(path=("name",)),),
+        }
 
     def test_leaves_missing_partials_unresolved(self) -> None:
         templates = {
@@ -113,6 +121,7 @@ class TestInlinePartials:
                     children=(PartialNode(name="row", indentation=None),),
                     raw_body=b"{{>row}}",
                     delimiters=Delimiters(start=b"{{", end=b"}}"),
+                    indentation=b"  ",
                 ),
             ),
             "row": (TextNode(chunks=(b"{{name}}",), value=b"{{name}}"),),
@@ -124,6 +133,7 @@ class TestInlinePartials:
                 children=(TextNode(chunks=(b"{{name}}",), value=b"{{name}}"),),
                 raw_body=b"{{>row}}",
                 delimiters=Delimiters(start=b"{{", end=b"}}"),
+                indentation=b"  ",
             ),
         )
 

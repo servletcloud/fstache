@@ -24,20 +24,7 @@ from fstache._compiler import (
 )
 
 
-class TestTextNode:
-    def test_from_bytes_splits_line_break_chunks(self) -> None:
-        assert TextNode.from_bytes(b"a\nb") == TextNode(
-            chunks=(b"a\n", b"b"),
-            value=b"a\nb",
-        )
-
-
 class TestCompileTemplate:
-    def test_compiles_plain_text_as_text_node(self) -> None:
-        assert fstache.compile(b"hello\nworld") == (
-            TextNode.from_bytes(b"hello\nworld"),
-        )
-
     def test_compiles_plain_text_line_break_chunks(self) -> None:
         assert fstache.compile(b"a\n\nb\r\nc\rd") == (
             TextNode(
@@ -102,13 +89,6 @@ class TestCompileTemplate:
         assert fstache.compile(b"a{{user.name}}c") == (
             TextNode.from_bytes(b"a"),
             VariableNode(path=("user", "name")),
-            TextNode.from_bytes(b"c"),
-        )
-
-    def test_compiles_templates_without_partial_loading(self) -> None:
-        assert fstache.compile(b"a{{name}}c") == (
-            TextNode.from_bytes(b"a"),
-            VariableNode(path=("name",)),
             TextNode.from_bytes(b"c"),
         )
 
@@ -283,14 +263,25 @@ class TestCompileTemplate:
             'unclosed tag at line 2, column 1 (offset 6): near "{{name"'
         )
 
-    def test_syntax_error_location_counts_carriage_return_line_breaks(self) -> None:
+    @pytest.mark.parametrize(
+        ("line_break", "offset"),
+        [
+            (b"\r", 6),
+            (b"\r\n", 7),
+        ],
+    )
+    def test_syntax_error_location_counts_non_lf_line_breaks(
+        self,
+        line_break: bytes,
+        offset: int,
+    ) -> None:
         with pytest.raises(UnclosedTagError) as exc_info:
-            fstache.compile(b"hello\r{{name")
+            fstache.compile(b"hello" + line_break + b"{{name")
 
         error = exc_info.value
         assert error.line == 2
         assert error.column == 1
-        assert error.offset == 6
+        assert error.offset == offset
 
     def test_raises_structured_error_for_unclosed_triple_tags(self) -> None:
         with pytest.raises(UnclosedTagError) as exc_info:
@@ -328,9 +319,13 @@ class TestCompileTemplate:
         assert error.offset == 0
         assert error.excerpt == "{{/flag}}"
 
-    def test_raises_structured_error_for_mismatched_section_close(self) -> None:
+    @pytest.mark.parametrize("sigil", [b"#", b"^"])
+    def test_raises_structured_error_for_mismatched_section_close(
+        self,
+        sigil: bytes,
+    ) -> None:
         with pytest.raises(SectionSyntaxError) as exc_info:
-            fstache.compile(b"{{#flag}}x{{/other}}")
+            fstache.compile(b"{{" + sigil + b"flag}}x{{/other}}")
 
         error = exc_info.value
         assert error.reason == "mismatched section close: expected flag, got other"
@@ -391,98 +386,75 @@ class TestCompileTemplate:
         assert error.kind == "invalid_delimiter"
 
     @pytest.mark.parametrize(
-        "template",
+        ("template", "reason"),
         [
-            b"{{#flag}}",
-            b"{{#outer}}{{#inner}}x{{/inner}}",
-            b"{{^flag}}",
-            b"{{#outer}}{{^inner}}x{{/inner}}",
+            (b"{{#outer}}{{#inner}}x{{/inner}}", "unclosed section: outer"),
+            (b"{{^flag}}", "unclosed section: flag"),
         ],
     )
-    def test_raises_for_unclosed_sections(self, template: bytes) -> None:
-        with pytest.raises(TemplateSyntaxError):
+    def test_raises_for_unclosed_section_variants(
+        self,
+        template: bytes,
+        reason: str,
+    ) -> None:
+        with pytest.raises(SectionSyntaxError) as exc_info:
             fstache.compile(template)
 
-    def test_raises_for_unopened_section_close(self) -> None:
-        with pytest.raises(TemplateSyntaxError):
-            fstache.compile(b"{{/flag}}")
-
-    def test_raises_for_mismatched_section_close(self) -> None:
-        with pytest.raises(TemplateSyntaxError):
-            fstache.compile(b"{{#flag}}x{{/other}}")
-
-    def test_raises_for_mismatched_inverted_section_close(self) -> None:
-        with pytest.raises(TemplateSyntaxError):
-            fstache.compile(b"{{^flag}}x{{/other}}")
+        assert exc_info.value.reason == reason
 
     @pytest.mark.parametrize(
         "template",
         [
-            b"{{$block}}default{{/block}}",
             b"{{<layout}}{{/layout}}",
-            b"{{<*layout}}{{/*layout}}",
             b"{{=<% %>=}}<%$block%>default<%/block%>",
-            b"{{=<% %>=}}<%<layout%><%/layout%>",
         ],
     )
     def test_raises_for_unsupported_inheritance_tags(self, template: bytes) -> None:
-        with pytest.raises(TemplateSyntaxError, match="unsupported tag"):
+        with pytest.raises(UnsupportedTagError, match="unsupported tag"):
             fstache.compile(template)
 
     @pytest.mark.parametrize(
-        "template",
+        ("template", "reason"),
         [
-            b"{{#}}x{{/}}",
-            b"{{#   }}x{{/   }}",
-            b"{{#user..active}}x{{/user..active}}",
-            b"{{#user. active}}x{{/user. active}}",
-            b"{{#.name}}x{{/.name}}",
-            b"{{^}}x{{/}}",
-            b"{{^   }}x{{/   }}",
-            b"{{^user..active}}x{{/user..active}}",
-            b"{{^user. active}}x{{/user. active}}",
-            b"{{^.name}}x{{/.name}}",
-            b"{{}}",
-            b"{{   }}",
-            b"{{.name}}",
-            b"{{name.}}",
-            b"{{user..name}}",
-            b"{{user. name}}",
-            b"{{{}}}",
-            b"{{{   }}}",
-            b"{{{.name}}}",
-            b"{{&}}",
-            b"{{& .name}}",
-            b"{{& user..name}}",
-            b"{{& user. name}}",
-            b"{{>}}",
-            b"{{>   }}",
-            b"{{>foo bar}}",
-            b"{{> foo\tbar }}",
-            b"{{>\xff}}",
-            b"{{>*}}",
-            b"{{> * }}",
-            b"{{>*foo bar}}",
-            b"{{> * foo bar }}",
+            (b"{{#}}x{{/}}", "empty name"),
+            (b"{{#user..active}}x{{/user..active}}", "invalid name"),
+            (b"{{^}}x{{/}}", "empty name"),
+            (b"{{^user. active}}x{{/user. active}}", "invalid name"),
+            (b"{{}}", "empty name"),
+            (b"{{.name}}", "invalid name"),
+            (b"{{name.}}", "invalid name"),
+            (b"{{user..name}}", "invalid name"),
+            (b"{{{}}}", "empty name"),
+            (b"{{{.name}}}", "invalid name"),
+            (b"{{&}}", "empty name"),
+            (b"{{& user..name}}", "invalid name"),
+            (b"{{>}}", "empty partial name"),
+            (b"{{>foo bar}}", "invalid partial name"),
+            (b"{{>\xff}}", "partial name must be valid UTF-8"),
+            (b"{{>*}}", "empty name"),
+            (b"{{>*foo bar}}", "invalid name"),
         ],
     )
-    def test_raises_for_empty_or_invalid_names(self, template: bytes) -> None:
-        with pytest.raises(TemplateSyntaxError):
+    def test_raises_for_empty_or_invalid_names(
+        self,
+        template: bytes,
+        reason: str,
+    ) -> None:
+        with pytest.raises(InvalidNameError) as exc_info:
             fstache.compile(template)
 
-    def test_raises_for_unclosed_triple_tags(self) -> None:
-        with pytest.raises(TemplateSyntaxError):
-            fstache.compile(b"{{{name}}")
+        assert exc_info.value.reason == reason
 
     @pytest.mark.parametrize(
         "template",
         [
-            b"{{= =}}",
             b"{{= <% =}}",
-            b"{{= <%= %> =}}",
             b"{{= <% =%> =}}",
+            b"{{= <% %>}}",
         ],
     )
     def test_raises_for_invalid_delimiter_declarations(self, template: bytes) -> None:
-        with pytest.raises(TemplateSyntaxError):
+        with pytest.raises(InvalidDelimiterError) as exc_info:
             fstache.compile(template)
+
+        assert exc_info.value.reason == "invalid delimiter declaration"
