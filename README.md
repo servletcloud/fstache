@@ -543,10 +543,12 @@ copy the bytes. Unescaped tags such as `{{{value}}}` and `{{& value}}` write
 Renderer calls return a `RenderedTemplate`:
 
 - `.to_bytes()` joins the rendered chunks into one `bytes` value.
-- `.iter_chunks()` returns `bytes | memoryview` chunks for streaming. Prefer
-  this for best performance when possible: it avoids buffering the whole
-  response into one value, and static template fragments can be yielded from the
-  compiled template without copying them into a joined response first.
+- `.iter_chunks()` returns `bytes | memoryview` chunks for streaming. Use it
+  when the consumer can accept chunks directly: it avoids joining the complete
+  response into one `bytes` value, and static template fragments can be yielded
+  without copying them into that joined value. See the
+  [render and compression experiment](#render-and-compression-experiment) for
+  measured time and Python heap trade-offs.
 - `.to_string(encoding="utf-8", errors="strict")` joins and decodes the chunks
   as text. Use it for CLI output, tests, and debugging; web responses usually
   need bytes instead.
@@ -575,6 +577,33 @@ Renderer calls return a `RenderedTemplate`:
 | CPU | AMD Ryzen 7 8845HS w/ Radeon 780M Graphics, 8 cores / 16 threads |
 | Compared versions | Fstache 0.1.1, Chevron 0.14.0, mstache 0.3.0, Pystache 0.6.8 |
 | Command | `RENDERER=<renderer> uv run --python 3.14 --extra dev python tests/perf_test.py`<br>`<renderer>` values: `fstache.no_indentation`, `fstache`, `mstache.no_indentation`, `mstache`, `chevron`, `pystache` |
+
+
+### Render and compression experiment
+
+On the same workstation, Fstache 0.1.7 rendered a 91,094-byte HTML response
+with `ignore_indents=True`. Each timing includes both rendering and compression.
+The uncompressed render took 0.252 ms (3972.1 renders per second).
+
+| Compressor | Whole response | Continuous chunks | Chunk time cost | Response size | Peak traced heap, whole → chunks |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Zstandard, level 3 | 0.336 ms | 0.446 ms | +32.7% | 12.7 KiB (-85.7%) | 276.14 → 155.83 KiB (-43.6%) |
+| Brotli, text mode, quality 4 | 0.714 ms | 0.819 ms | +14.7% | 12.0 KiB (-86.6%) | 198.77 → 27.26 KiB (-86.3%) |
+| gzip, level 6 | 1.115 ms | 1.327 ms | +19.0% | 12.6 KiB (-85.8%) | 395.82 → 321.15 KiB (-18.9%) |
+
+In this run, Zstandard was the fastest compressor and Brotli produced the
+smallest response. Passing `RenderedTemplate.iter_chunks()` through one
+continuous compressor used less traced Python heap, but was slower for every
+compressor. The heap figures come from `tracemalloc` and exclude allocations
+inside native compression libraries.
+
+The chunk variants used one compressor context, finalized it once, and did not
+call `to_bytes()`, join the response, or flush between Fstache chunks. Across
+905 input chunks, Brotli and Zstandard emitted no bytes before finalization;
+gzip emitted only its 10-byte header. Real HTTP latency therefore depends on an
+application's flush policy and any server or proxy buffering.
+
+The run used Brotli 1.2.0, Zstandard 0.25.0, and zlib-ng 1.3.1 on CPython 3.14.6.
 
 
 ### $4/month VPS throughput
