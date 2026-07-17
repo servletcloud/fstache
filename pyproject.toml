@@ -28,6 +28,7 @@ dev = [
     "chevron==0.14.0",
     "hypothesis",
     "mstache==0.3.0",
+    "mutmut==3.6.0",
     "pystache==0.6.8",
     "pytest",
     "ty"
@@ -35,6 +36,22 @@ dev = [
 
 [tool.uv]
 exclude-newer = "24 hours"
+
+[tool.mutmut]
+source_paths = ["src/fstache"]
+only_mutate = ["src/fstache/_renderer.py"]
+pytest_add_cli_args_test_selection = [
+    "tests/test_mustache_specs.py",
+    "tests/test_partial_loader.py",
+    "tests/test_partial_spec.py",
+    "tests/test_properties.py",
+    "tests/test_render_comments_delimiters.py",
+    "tests/test_render_partials.py",
+    "tests/test_render_section_lambdas.py",
+    "tests/test_render_sections.py",
+    "tests/test_render_variables.py",
+    "tests/test_rendered_template.py",
+]
 
 [project.urls]
 Homepage = "https://github.com/servletcloud/fstache"

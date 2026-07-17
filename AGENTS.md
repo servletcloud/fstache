@@ -20,6 +20,8 @@ use direct `uv run ...` commands for narrower checks.
 - `make test` runs the Fstache test suite.
 - `make build-html` renders the demo HTML output.
 - `make perf-test` runs the renderer performance diagnostics.
+- `make mutation-test-renderer` runs a fresh mutation audit of the renderer;
+  use it after renderer or renderer-test portfolio changes.
 - `make post-ai-change` runs formatting, linting, tests, and demo rendering; run
   it after code changes.
 

@@ -1,7 +1,10 @@
+MUTMUT_MAX_CHILDREN ?= 8
+
 .PHONY: \
 	build-html \
 	format \
 	lint \
+	mutation-test-renderer \
 	post-ai-change \
 	perf-test \
 	test
@@ -17,6 +20,11 @@ lint:
 	uv run --extra dev ruff check .
 	uv run --extra dev ruff format --check .
 	uv run --extra dev ty check ./src/fstache
+
+mutation-test-renderer:
+	rm -rf mutants/
+	uv run --extra dev mutmut run --max-children $(MUTMUT_MAX_CHILDREN)
+	uv run --extra dev mutmut results
 
 post-ai-change: format
 post-ai-change: lint
