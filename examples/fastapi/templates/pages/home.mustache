@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+{{> partials/base_head}}
+<body>
+  {{> partials/nav}}
+  <main class="shell">
+    <section class="intro">
+      <p class="kicker">Fstache example</p>
+      <h1>{{heading}}</h1>
+      <p class="lead">{{lead}}</p>
+      <p class="notice">{{notice}}</p>
+      <p class="safe">Rendered from {{{safe_badge_html}}}</p>
+    </section>
+
+    <section class="cards" aria-label="Rendering modes">
+      {{#cards}}
+        {{> partials/card}}
+      {{/cards}}
+    </section>
+
+    <section class="features">
+      <h2>Template features</h2>
+      <ul>
+        {{#features}}
+          <li>{{.}}</li>
+        {{/features}}
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
